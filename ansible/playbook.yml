@@ -17,11 +17,13 @@
 - hosts: lst_nodes
   gather_facts: True
   tasks:
-  - name: Install prerequisites on all nodes
+  - name: "Install prerequisites on all nodes."
     include_tasks: rke/tasks/nodes.yml
 
 - hosts: localhost
   gather_facts: True
   tasks:
-  - name: Run RKE installer
+  - name: "Run RKE installer."
     include_tasks: rke/tasks/rke.yml
+    when: 
+      - '"rke" in triggers|default([])'
