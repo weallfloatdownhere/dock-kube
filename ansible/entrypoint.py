@@ -2,8 +2,10 @@
 
 from ast import arg
 from logging import raiseExceptions
-import os, subprocess, argparse
+import subprocess, argparse
 from argparse import RawTextHelpFormatter
+import os.path
+from os import path
 
 USAGE="""
 USAGE
@@ -18,17 +20,23 @@ EXAMPLES
 * entrypoint.py install argocd
 """
 
-def start_playbook(cmd="ls"):
+#CONST_CONFIG_PATH='/var/config.yml'
+#CONST_PLAYBOOK_PATH='/usr/share/bin/ansible/playbook.yml'
+CONST_CONFIG_PATH='/home/anon/.workspaces/homelab/config.yml'
+CONST_PLAYBOOK_PATH='/home/anon/Desktop/dock-kube/ansible/playbook.yml'
+
+def start_playbook(cmd=None):
     try:
         return subprocess.run(cmd, shell=True, stdout=subprocess.PIPE).stdout.decode('utf-8')
     except Exception as err:
         print(err)
 
 def generate_command(args=[]):
-    command = ['ansible-playbook', '-i', 'localhost', '--tags']
-    tags = args.task + ',' + ','.join(args.components)
-    command.append(tags)
-    command.append('/usr/share/bin/ansible/playbook.yml')
+    command = ['ansible-playbook', '-i', 'localhost', '--extra-vars']
+    triggers = args.task + ',' + ','.join(args.components)
+    command.append("'" + '{"triggers": [%s]}' % triggers + "'")
+    if [path.exists(CONST_CONFIG_PATH)]: command.append(f'--extra-vars @{CONST_CONFIG_PATH}')
+    command.append(CONST_PLAYBOOK_PATH)
     return ' '.join(command)
 
 def get_arguments():
@@ -42,9 +50,8 @@ def main():
     args = get_arguments()
     command = generate_command(args)
     print(command)
-
-    #command = generate_command()
-    #start_playbook(command)
+    output = start_playbook(command)
+    print(output)
 
 if __name__ == '__main__':
     main()

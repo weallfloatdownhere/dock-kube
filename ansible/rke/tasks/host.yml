@@ -1,4 +1,4 @@
-- name: Generate an OpenSSH keypair with the default values (2048 bits, rsa)
+- name: "Generate an OpenSSH keypair with the default values (2048 bits, rsa)"
   community.crypto.openssh_keypair:
     path: "{{ '~/.ssh/id_rsa' | expanduser }}"
     size: 2048

@@ -2,6 +2,7 @@
   file:
     path: "{{ shared_directory }}/cluster"
     state: directory
+    recurse: True
 
 - name: Create/update RKE config file
   template:
@@ -9,9 +10,23 @@
     dest: "{{ shared_directory }}/cluster/cluster.yml"
     mode: u=rw,g=r,o=
   register: rke_cluster_config
+  when: |-
+    "rke" in triggers|default([])
 
 - name: Run RKE installer
   shell: |
     rke up | tee "{{ shared_directory }}/rke-up.log"
   args:
     chdir: "{{ shared_directory }}/cluster"
+  when: |-
+    "install" in triggers|default([]) and
+    "rke" in triggers|default([])
+
+- name: Uninstall RKE from nodes.
+  shell: |
+    rke remove --force | tee "{{ shared_directory }}/rke-up.log"
+  args:
+    chdir: "{{ shared_directory }}/cluster"
+  when: |-
+    "remove" in triggers|default([]) and
+    "rke" in triggers|default([])
