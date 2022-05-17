@@ -1,0 +1,27 @@
+- hosts: localhost
+  gather_facts: True
+  tasks:
+  - name: "Generate hosts list from the provided config.yml file"
+    add_host:
+      hostname: '{{item.address|trim|ansible.netcommon.ipaddr}}'
+      ansible_connection: ssh
+      ansible_user: "{{cluster.user|trim}}"
+      ansible_ssh_pass: "{{cluster.password|trim}}"
+      ansible_become_pass: "{{cluster.password|trim}}"
+      groups: lst_nodes
+    with_items: "{{cluster.nodes|default([])}}"
+
+  - name: Run host prerequisites
+    include_tasks: rke/tasks/host.yml
+
+- hosts: lst_nodes
+  gather_facts: True
+  tasks:
+  - name: Install prerequisites on all nodes
+    include_tasks: rke/tasks/nodes.yml
+
+- hosts: localhost
+  gather_facts: True
+  tasks:
+  - name: Run RKE installer
+    include_tasks: rke/tasks/rke.yml

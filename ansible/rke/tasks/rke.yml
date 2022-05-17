@@ -1,0 +1,17 @@
+- name: Ensure config directory exists
+  file:
+    path: "{{ shared_directory }}/cluster"
+    state: directory
+
+- name: Create/update RKE config file
+  template:
+    src: "{{playbook_dir}}/rke/templates/cluster.yml.j2"
+    dest: "{{ shared_directory }}/cluster/cluster.yml"
+    mode: u=rw,g=r,o=
+  register: rke_cluster_config
+
+- name: Run RKE installer
+  shell: |
+    rke up | tee "{{ shared_directory }}/rke-up.log"
+  args:
+    chdir: "{{ shared_directory }}/cluster"
