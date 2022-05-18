@@ -6,7 +6,22 @@
 
 # *<ins>Usage.</ins>*
 
-## Configuration
+```bash
+
+```
+
+# *<ins>Cli tool.</ins>*
+
+| option |          description           |         cmd         | default |   type | required |          choices |
+| ------ | :----------------------------: | :-----------------: | ------: | -----: | -------: | ---------------: |
+| task   |     Command execution mode     |                     | install | string |      yes | {install,remove} |
+| rke    |  Install Kubernetes on nodes   |                     |     rke | string |          | {install,remove} |
+| argocd | Deploy ArgoCD into the cluster | '-c', '--component' |  argocd | string |          |                  |
+
+---
+
+
+# *<ins>Configuration.</ins>*
 
 | value                                 |            description             |              default |   type | required |
 | ------------------------------------- | :--------------------------------: | -------------------: | -----: | -------: |
