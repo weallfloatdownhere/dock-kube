@@ -68,11 +68,11 @@ $ python3 entrypoint.py [PARAMETERS]
 
 # *<ins>Parameters.</ins>*
 
-| parameter | description                    | cmd                 | default | type   | required | choices          |
-| :-------- | :----------------------------- | :------------------ | :------ | :----- | :------- | :--------------- |
-| task      | Command execution mode         |                     | install | string | yes      | {install,remove} |
-| rke       | Install Kubernetes on nodes    | '-c', '--component' | rke     | string |          | {install,remove} |
-| argocd    | Deploy ArgoCD into the cluster | '-c', '--component' | argocd  | string |          |                  |
+| parameter | description                    | cmd                 | default | type   | required | choices          | dependencies         |
+| :-------- | :----------------------------- | :------------------ | :------ | :----- | :------- | :--------------- | :------------------- |
+| task      | Command execution mode         |                     | install | string | yes      | {install,remove} | {install,remove}     |
+| rke       | Install Kubernetes on nodes    | '-c', '--component' | rke     | string |          |                  |                      |
+| argocd    | Deploy ArgoCD into the cluster | '-c', '--component' | argocd  | string |          |                  | Kubernetes installed |
 
 ---
 
@@ -118,13 +118,13 @@ $ python3 entrypoint.py [PARAMETERS]
 **Install Kubernetes `ONLY` into the cluster.**
 
 ```bash
-$ docker run -it -v "$(pwd)/:/root/rke/" -v ~/.ssh/:/root/.ssh silentreatmen7/dock-kube:latest -c rke install
+$ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest -c rke install
 ```
 
 **Install Kubernetes and ArgoCD vanilla flavored into the cluster.**
 
 ```bash
-$ docker run -it -v "$(pwd)/:/root/rke/" -v ~/.ssh/:/root/.ssh  silentreatmen7/dock-kube:latest -c rke -c argocd install
+$ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest -c rke -c argocd install
 ```
 
 ## Client version
