@@ -21,8 +21,8 @@ EXAMPLES
 * entrypoint.py -c argocd remove
 """
 
-CONST_CONFIG_PATH='/root/rke/cluster/config.yml'
-CONST_PLAYBOOK_PATH='/usr/share/bin/ansible/playbook.yml'
+CONST_CONFIG_PATH='/root/rke/config.yml'
+CONST_PLAYBOOK_PATH='/usr/share/bin/playbook.yml'
 
 def start_playbook(cmd=None):
     try:
