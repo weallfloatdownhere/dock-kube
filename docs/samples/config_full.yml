@@ -6,7 +6,11 @@ cluster:
 
   nodes:
     - address: 10.0.0.175
-      hostname: cluster
+      hostname: node1
+    - address: 10.0.0.176
+      hostname: node2
+    - address: 10.0.0.177
+      hostname: node3
 
   addons:
     etcd_snapshots:

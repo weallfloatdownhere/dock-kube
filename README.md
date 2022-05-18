@@ -1,41 +1,83 @@
 # ***<ins>Dock-kube.</ins>***
 
-## *Containers Orchestration + Gitops opinionated installer.*
+***Containers Orchestration + Gitops opinionated installer facilitating the process of RKE & ArgoCD powered on-premise Kubernetes cluster installations.***
 
 ---
+
+# *<ins>Installation.</ins>*
+
+***Minimum requirements***
+
+![Capture](https://user-images.githubusercontent.com/102635491/164043817-7143bfae-a8a8-47ed-9ac5-23f74c86c82d.PNG)
+
+***1. Install curl, git and make***
+
+```bash
+# Ubuntu >= 18.04
+$ sudo apt -y install curl git make
+# Archlinux
+$ sudo pacman -S curl git make --needed --no-confirm
+```
+
+[***2. Install Docker***](https://docs.docker.com/engine/install/)
+
+```bash
+# Ubuntu >= 18.04
+$ sudo apt -y install docker.io
+# Archlinux
+$ sudo pacman -S docker --needed --no-confirm
+```
+
+***3. Enable docker and containerd services***
+
+```bash
+# Enabled the docker service.
+$ sudo systemctl enable docker --now
+# Enabled the containerd service.
+$ sudo systemctl enable containerd --now
+# Ensure docker group exists.
+$ sudo groupadd docker
+# Add sudo user to the docker group.
+$ sudo usermod -aG docker $USER
+# Reboot your system.
+$ sudo reboot
+```
+  
+*`Optional: pre-pulling the images.`*
+  
+```bash
+# Kubernetes installer image.
+$ docker pull silentreatmen7/dock-kube:latest
+```
 
 # *<ins>Usage.</ins>*
 
-```bash
+**Please note that this step is assuming that there is a valid `config.yml` file in the current directory.**
 
-```
-
-# *<ins>Cli tool.</ins>*
-
-| option |          description           |         cmd         | default |   type | required |          choices |
-| ------ | :----------------------------: | :-----------------: | ------: | -----: | -------: | ---------------: |
-| task   |     Command execution mode     |                     | install | string |      yes | {install,remove} |
-| rke    |  Install Kubernetes on nodes   | '-c', '--component' |     rke | string |          | {install,remove} |
-| argocd | Deploy ArgoCD into the cluster | '-c', '--component' |  argocd | string |          |                  |
-
-# *<ins>Examples.</ins>*
-
-**Install Kubernetes `ONLY` into the cluster.**
+### *Docker version. (`recommended`).*
 
 ```bash
-$ python3 entrypoint.py -c rke install
+$ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube [PARAMETERS]
 ```
 
-**Install Kubernetes and ArgoCD vanilla flavored into the cluster.**
+### *Client version.*
 
 ```bash
-$ python3 entrypoint.py -c rke -c argocd install
+$ python3 entrypoint.py [PARAMETERS]
 ```
+
+# *<ins>Parameters.</ins>*
+
+| parameter |          description           |         cmd         | default |   type | required |          choices |
+| --------- | :----------------------------: | :-----------------: | ------: | -----: | -------: | ---------------: |
+| task      |     Command execution mode     |                     | install | string |      yes | {install,remove} |
+| rke       |  Install Kubernetes on nodes   | '-c', '--component' |     rke | string |          | {install,remove} |
+| argocd    | Deploy ArgoCD into the cluster | '-c', '--component' |  argocd | string |          |                  |
 
 ---
 
 
-# *<ins>Configuration.</ins>*
+# *<ins>Configuration file values.</ins>*
 
 | value                                 |            description             |              default |   type | required |
 | ------------------------------------- | :--------------------------------: | -------------------: | -----: | -------: |
@@ -56,3 +98,45 @@ $ python3 entrypoint.py -c rke -c argocd install
 | ingress.custom_ingress_controller     |   custom ingress controller name   |                nginx | string |       no |
 | docker_socket_path                    |         docker daemon path         | /var/run/docker.sock | string |       no |
 | workspace_directory                   | output files destination directory |            $HOME/rke | string |       no |
+
+## **Samples.**
+
+[**Full configuration file example.**](docs/samples/config_full.yml)
+
+[**Minimal single node configuration.**](docs/samples/config_minimal.yml)
+
+[**Basic multiple nodes configuration.**](docs/samples/config_multiple_nodes.yml)
+
+[**Basic single node configuration.**](docs/samples/config_single_node.yml)
+
+---
+
+# *<ins>Examples.</ins>*
+
+## Docker version
+
+**Install Kubernetes `ONLY` into the cluster.**
+
+```bash
+$ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube -c rke install
+```
+
+**Install Kubernetes and ArgoCD vanilla flavored into the cluster.**
+
+```bash
+$ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube -c rke -c argocd install
+```
+
+## Client version
+
+**Install Kubernetes `ONLY` into the cluster.**
+
+```bash
+$ python3 entrypoint.py -c rke install
+```
+
+**Install Kubernetes and ArgoCD vanilla flavored into the cluster.**
+
+```bash
+$ python3 entrypoint.py -c rke -c argocd install
+```
