@@ -30,4 +30,4 @@ ingress:
 # Could be /var/run/docker.sock too.
 docker_socket_path: /var/run/docker.sock
 
-workspace_directory: "{{ ansible_env.HOME | default(ansible_env.PWD) | default('/root') }}/rke"
+workspace_directory: "{{ ansible_env.HOME | default('/root') }}/rke"

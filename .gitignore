@@ -1,0 +1,6 @@
+/*.tmp*
+*.mkdkr*
+.vscode*
+.history
+config.yml
+*.log

@@ -12,7 +12,12 @@ data:
   name: YXJnb2NkLmRldi5pbwo=
   server: aHR0cHM6Ly9hcmdvY2QuZGV2LmlvCg==
 
-# htpasswd -bnBC 10 "" <password> | tr -d ':\n'
+# password: htpasswd -bnBC 10 "" <password> | tr -d ':\n'
+# name: base64 -w 0 <<
+# argocd.dev.io
+# server: base64 -w 0 <<
+# https://argocd.dev.io
+
 # config: base64 -w 0 <<
 # {
 #   "username": "admin",
@@ -21,7 +26,3 @@ data:
 #     "insecure": true
 #   }
 # }
-# name: base64 -w 0 <<
-# argocd.dev.io
-# server: base64 -w 0 <<
-# https://argocd.dev.io
