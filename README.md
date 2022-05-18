@@ -57,7 +57,7 @@ $ docker pull silentreatmen7/dock-kube:latest
 ### *Docker version. (`recommended`).*
 
 ```bash
-$ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube [PARAMETERS]
+$ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest [PARAMETERS]
 ```
 
 ### *Client version.*
@@ -118,13 +118,13 @@ $ python3 entrypoint.py [PARAMETERS]
 **Install Kubernetes `ONLY` into the cluster.**
 
 ```bash
-$ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube -c rke install
+$ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest -c rke install
 ```
 
 **Install Kubernetes and ArgoCD vanilla flavored into the cluster.**
 
 ```bash
-$ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube -c rke -c argocd install
+$ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest -c rke -c argocd install
 ```
 
 ## Client version
