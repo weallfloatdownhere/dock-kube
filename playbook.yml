@@ -24,6 +24,12 @@
   gather_facts: True
   tasks:
   - name: "Run RKE installer."
-    include_tasks: rke/tasks/rke.yml
+    include_tasks: ansible/rke/tasks/rke.yml
     when: 
       - '"rke" in triggers|default([])'
+      - '"argocd" in triggers|default([])'
+
+  - name: "Deploy ArgoCD."
+    include_tasks: ansible/argocd/tasks/argocd.yml
+    when: 
+      - '"argocd" in triggers|default([])'

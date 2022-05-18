@@ -1,0 +1,9 @@
+kubectl_bin_path: /usr/bin/kubectl
+
+workspace_directory: "{{ ansible_env.HOME | default(ansible_env.PWD) | default('/root') }}/rke"
+
+cluster:
+  addons:
+    argocd:
+      enabled: True
+      flavor: vanilla

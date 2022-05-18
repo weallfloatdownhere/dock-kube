@@ -14,6 +14,7 @@ cluster:
 
     argocd:
       enabled: False
+      flavor: vanilla
 
 networking:
   # Default: calico
@@ -28,6 +29,6 @@ ingress:
   custom_ingress_controller: nginx
 
 # Could be /var/run/docker.sock too.
-# docker_socket_path: /var/run/docker.sock
+docker_socket_path: /var/run/docker.sock
 
-#shared_directory: "{{ ansible_env.HOME | default(ansible_env.PWD) | default('/root') }}/rke"
+workspace_directory: "{{ ansible_env.HOME | default(ansible_env.PWD) | default('/root') }}/rke"

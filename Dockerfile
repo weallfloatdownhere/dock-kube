@@ -7,6 +7,7 @@ RUN python3 -m pip install --upgrade pip
 
 RUN curl -L --silent https://github.com/rancher/rke/releases/download/v1.3.11/rke_linux-amd64 -o /bin/rke && chmod +x /bin/rke
 RUN curl -L --silent https://dl.k8s.io/release/v1.24.0/bin/linux/amd64/kubectl -o /bin/kubectl && chmod +x /bin/kubectl
+RUN curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
 RUN pip3 install --no-cache-dir --no-cache setuptools==62.1.0
 RUN pip3 install --no-cache-dir --no-cache wheel==0.37.1
@@ -30,5 +31,6 @@ RUN ansible-galaxy collection install kubernetes.core
 
 RUN mkdir -p /usr/share/bin /mounted
 COPY ./ansible /usr/share/bin/ansible
+COPY ./argocd /usr/share/bin/argocd
 
 CMD ["ansible-playbook"]

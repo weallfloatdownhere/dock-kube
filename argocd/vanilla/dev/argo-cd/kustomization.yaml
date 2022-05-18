@@ -1,0 +1,29 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: argocd
+
+# namePrefix: dev-
+
+commonLabels:
+  app.kubernetes.io/part-of: argocd
+
+bases:
+  - ../../.base/argo-cd
+
+resources:
+  - argo-cd-cluster.yaml
+
+patchesStrategicMerge:
+  - argo-cd-ui-ingress.yaml
+  - argo-cd-cm.yaml
+  - argo-cd-secrets.yaml
+
+patchesJson6902:
+  - path: argo-cd-server-deploy-command.yaml
+    target:
+      group: apps
+      kind: Deployment
+      name: argocd-server
+      version: v1
+    
