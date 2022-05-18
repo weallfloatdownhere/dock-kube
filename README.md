@@ -80,7 +80,7 @@ $ python3 entrypoint.py [PARAMETERS]
 # *<ins>Configuration file values.</ins>*
 
 | value                                 | description                        |       default        | type   | required |
-| :------------------------------------ | :--------------------------------- | :------------------: | :----- | :------- |
+| :------------------------------------ | :--------------------------------- | :------------------- | :----- | :------- |
 | cluster.domain                        | organization domain                |     local.local      | string | yes      |
 | cluster.environment                   | target cluster environment         |         dev          | string | yes      |
 | cluster.user                          | nodes sudo user                    |        admin         | string | yes      |
