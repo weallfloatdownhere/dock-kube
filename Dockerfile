@@ -31,6 +31,8 @@ RUN ansible-galaxy collection install kubernetes.core
 
 RUN mkdir -p /usr/share/bin /mounted
 COPY ./ansible /usr/share/bin/ansible
+COPY ./ansible.cfg /usr/share/bin/ansible.cfg
+COPY ./playbook.yml /usr/share/bin/playbook.yml
 COPY ./argocd /usr/share/bin/argocd
 
 CMD ["ansible-playbook"]

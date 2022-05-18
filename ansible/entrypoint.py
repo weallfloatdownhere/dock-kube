@@ -21,10 +21,8 @@ EXAMPLES
 * entrypoint.py -c argocd remove
 """
 
-#CONST_CONFIG_PATH='/var/config.yml'
-#CONST_PLAYBOOK_PATH='/usr/share/bin/ansible/playbook.yml'
-CONST_CONFIG_PATH='/home/anon/.workspaces/homelab/config.yml'
-CONST_PLAYBOOK_PATH='/home/anon/Desktop/dock-kube/playbook.yml'
+CONST_CONFIG_PATH='/root/rke/cluster/config.yml'
+CONST_PLAYBOOK_PATH='/usr/share/bin/ansible/playbook.yml'
 
 def start_playbook(cmd=None):
     try:
@@ -34,7 +32,6 @@ def start_playbook(cmd=None):
 
 def generate_command(args=[]):
     command = ['ansible-playbook', '-i', 'localhost', '--extra-vars']
-
     triggers = args.task + ',' + ','.join(args.components)
     command.append("'" + '{"triggers": [%s]}' % triggers + "'")
     if [path.exists(CONST_CONFIG_PATH)]: command.append(f'--extra-vars @{CONST_CONFIG_PATH}')
