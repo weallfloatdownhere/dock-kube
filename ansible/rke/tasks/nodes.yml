@@ -4,20 +4,17 @@
     sudo apt-get -y update
     sudo apt-get -y upgrade
   register: docker_install
-  when: 
-    - '"install" in triggers|default([])'
+  when: ("install" in triggers|default([]))
 
 - name: Update apt cache
   become: True
   apt: update_cache=yes cache_valid_time=3600
-  when: 
-    - '"install" in triggers|default([])'
+  when: ("install" in triggers|default([]))
 
 - name: Upgrade all apt packages
   become: True
   apt: upgrade=dist
-  when:
-    - '"install" in triggers|default([])'
+  when: ("install" in triggers|default([]))
 
 - name: Install dependencies
   become: True
@@ -38,8 +35,7 @@
     - python3
     - git
   register: docker_install
-  when: 
-    - '"install" in triggers|default([])'
+  when: ("install" in triggers|default([]))
 
 - name: Add RKE admin user
   become: True
@@ -47,16 +43,14 @@
     name: rke
     shell: /bin/bash
     generate_ssh_key: True
-  when: 
-    - '"install" in triggers|default([])'
+  when: ("install" in triggers|default([]))
 
 - name: Create sudo file
   become: True
   file:
     path: /etc/sudoers.d/rke
     state: touch
-  when: 
-    - '"install" in triggers|default([])'
+  when: ("install" in triggers|default([]))
 
 - name: Give rke user passwordless sudo
   become: True
@@ -64,8 +58,7 @@
     path: /etc/sudoers.d/rke
     state: present
     line: 'rke ALL=(ALL:ALL) NOPASSWD: ALL'
-  when: 
-    - '"install" in triggers|default([])'
+  when: ("install" in triggers|default([]))
 
 - name: Set authorized key taken from file
   become: True
@@ -73,8 +66,7 @@
     user: rke
     state: present
     key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
-  when: 
-    - '"install" in triggers|default([])'
+  when: ("install" in triggers|default([]))
 
 - name: Load kernel modules for RKE
   become: True
@@ -110,24 +102,21 @@
     - xt_set
     - xt_statistic
     - xt_tcpudp
-  when: 
-    - '"install" in triggers|default([])'
+  when: ("install" in triggers|default([]))
 
 - name: Add Docker GPG apt Key
   become: True
   apt_key:
     url: https://download.docker.com/linux/ubuntu/gpg
     state: present
-  when: 
-    - '"install" in triggers|default([])'
+  when: ("install" in triggers|default([]))
 
 - name: Add Docker Repository
   become: True
   apt_repository:
     repo: deb https://download.docker.com/linux/ubuntu focal stable
     state: present
-  when: 
-    - '"install" in triggers|default([])'
+  when: ("install" in triggers|default([]))
 
 - name: Install Docker
   become: True
@@ -141,22 +130,19 @@
     - docker-ce-cli 
     - containerd.io
   register: docker_install
-  when: 
-    - '"install" in triggers|default([])'
+  when: ("install" in triggers|default([]))
 
 - name: Disable swap
   become: True
   command: swapoff --all
-  when: 
-    - '"install" in triggers|default([])'
+  when: ("install" in triggers|default([]))
 
 - name: Make docker.service.d directory
   become: True
   file:
     path: /usr/lib/systemd/system/docker.service.d
     state: directory
-  when: 
-    - '"install" in triggers|default([])'
+  when: ("install" in triggers|default([]))
 
 - name: Disable SWAP in fstab since kubernetes can't work with swap enabled (2/2)
   become: True
@@ -164,8 +150,7 @@
     path: /etc/fstab
     regexp: '^([^#].*?\sswap\s+.*)$'
     replace: '# \1'
-  when: 
-    - '"install" in triggers|default([])'
+  when: ("install" in triggers|default([]))
 
 - name: Set Docker mount flags
   become: True
@@ -175,8 +160,7 @@
       [Service]
       MountFlags=shared
   register: mount_flags_updated
-  when: 
-    - '"install" in triggers|default([])'
+  when: ("install" in triggers|default([]))
 
 - name: Reload systemd daemon
   become: True
@@ -193,8 +177,7 @@
     state: 'started'
     enabled: True
   with_items: [ 'nfs-server.service', 'docker', 'ntp', 'containerd' ]
-  when: 
-    - '"install" in triggers|default([])'
+  when: ("install" in triggers|default([]))
 
 - name: "[PREREQUISITES] - Disable auto security updates."
   become: True
@@ -203,8 +186,7 @@
     state: 'stopped'
     enabled: False
   with_items: [ 'apt-daily-upgrade.timer', 'apt-daily-upgrade.service', 'apt-daily.timer', 'apt-daily.service', snapd.socket, snapd.service ]
-  when: 
-    - '"install" in triggers|default([])'
+  when: ("install" in triggers|default([]))
 
 - name: Restart Docker
   service:
@@ -214,7 +196,7 @@
   when:
     - docker_install is changed
     - system_daemon_reload is changed
-    - '"install" in triggers|default([])'
+    - ("install" in triggers|default([]))
 
 - name: Add RKE SSH user to dockerroot group
   become: True
@@ -222,8 +204,7 @@
     name: rke
     groups: [docker, sudo]
     append: yes
-  when: 
-    - '"install" in triggers|default([])'
+  when: ("install" in triggers|default([]))
 
 - name: Modify sysctl entries
   become: True
@@ -237,8 +218,7 @@
     - {key: net.bridge.bridge-nf-call-ip6tables, value: 1}
     - {key: net.bridge.bridge-nf-call-iptables,  value: 1}
     - {key: net.ipv4.ip_forward,  value: 1}
-  when: 
-    - '"install" in triggers|default([])'
+  when: ("install" in triggers|default([]))
 
 - name: "[REBOOT] - Check if /var/run/reboot-required exists"
   stat:

@@ -9,5 +9,5 @@
   kubernetes.core.k8s:
     state: present
     definition: "{{ resources }}"
-    kubeconfig: "{{workspace_directory}}/cluster/kube_config_cluster.yml"
+    kubeconfig: "{{workspace_directory}}/kube_config_cluster.yml"
     wait: True

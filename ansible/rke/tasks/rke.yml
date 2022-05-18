@@ -1,32 +1,40 @@
-- name: Ensure config directory exists
-  file:
-    path: "{{ workspace_directory }}/cluster"
-    state: directory
-    recurse: True
+#- name: Ensure config directory exists
+#  file:
+#    path: "{{ workspace_directory }}"
+#    state: directory
+#    recurse: True
 
 - name: Create/update RKE config file
   template:
     src: "{{playbook_dir}}/ansible/rke/templates/cluster.yml.j2"
-    dest: "{{ workspace_directory }}/cluster/cluster.yml"
+    dest: "{{ workspace_directory }}/cluster.yml"
     mode: u=rw,g=r,o=
   register: rke_cluster_config
-  when: |-
-    "rke" in triggers|default([])
+  when: ("rke" in triggers|default([]))
 
 - name: Run RKE installer
   shell: |
     rke up | tee "{{ workspace_directory }}/rke-up.log"
   args:
-    chdir: "{{ workspace_directory }}/cluster"
-  when: |-
-    "install" in triggers|default([]) and
-    "rke" in triggers|default([])
+    chdir: "{{ workspace_directory }}/"
+  when: ("install" in triggers|default([])) and ("rke" in triggers|default([]))
 
 - name: Uninstall RKE from nodes.
+  environment:
+    KUBECONFIG: "{{ workspace_directory }}/kube_config_cluster.yml"
   shell: |
     rke remove --force | tee "{{ workspace_directory }}/rke-up.log"
   args:
-    chdir: "{{ workspace_directory }}/cluster"
-  when: |-
-    "remove" in triggers|default([]) and
-    "rke" in triggers|default([])
+    chdir: "{{ workspace_directory }}/"
+  when: ("remove" in triggers|default([])) and ("rke" in triggers|default([]))
+
+- name: Ensure the resulting kube_config_cluster.yml is present.
+  stat:
+    path: "{{ workspace_directory }}/kube_config_cluster.yml"
+  register: kube_config_present
+
+- name: Ensure the resulting kube_config_cluster.yml has the rights permissions.
+  file:
+    path: "{{ workspace_directory }}/kube_config_cluster.yml"
+    mode: '0666'
+  when: kube_config_present.stat.exists
