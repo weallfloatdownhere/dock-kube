@@ -1,13 +1,13 @@
 
 - name: "Deploy ArgoCD into the cluster."
   set_fact:
-    resources: "{{ lookup('kubernetes.core.kustomize', binary_path=kubectl_bin_path, dir=kustomize_path) }}"
+    resources: "{{ lookup('kubernetes.core.kustomize', binary_path='/usr/bin/kubectl', dir=kustomize_path) }}"
   vars:
     kustomize_path: "{{playbook_dir}}/argocd/{{cluster.addons.argocd.flavor|default('vanilla')}}/{{cluster.environment}}"
 
 - name: "Apply Kustomize resources."
   kubernetes.core.k8s:
     state: present
-    definition: "{{ resources | to_nice_yaml }}"
+    definition: "{{ resources }}"
     kubeconfig: "{{workspace_directory}}/cluster/kube_config_cluster.yml"
     wait: True

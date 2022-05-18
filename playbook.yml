@@ -12,13 +12,13 @@
     with_items: "{{cluster.nodes|default([])}}"
 
   - name: Run host prerequisites
-    include_tasks: rke/tasks/host.yml
+    include_tasks: ansible/rke/tasks/host.yml
 
 - hosts: lst_nodes
   gather_facts: True
   tasks:
   - name: "Install prerequisites on all nodes."
-    include_tasks: rke/tasks/nodes.yml
+    include_tasks: ansible/rke/tasks/nodes.yml
 
 - hosts: localhost
   gather_facts: True

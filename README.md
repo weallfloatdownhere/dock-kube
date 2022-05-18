@@ -15,8 +15,22 @@
 | option |          description           |         cmd         | default |   type | required |          choices |
 | ------ | :----------------------------: | :-----------------: | ------: | -----: | -------: | ---------------: |
 | task   |     Command execution mode     |                     | install | string |      yes | {install,remove} |
-| rke    |  Install Kubernetes on nodes   |                     |     rke | string |          | {install,remove} |
+| rke    |  Install Kubernetes on nodes   | '-c', '--component' |     rke | string |          | {install,remove} |
 | argocd | Deploy ArgoCD into the cluster | '-c', '--component' |  argocd | string |          |                  |
+
+# *<ins>Examples.</ins>*
+
+**Install Kubernetes `ONLY` into the cluster.**
+
+```bash
+$ python3 entrypoint.py -c rke install
+```
+
+**Install Kubernetes and ArgoCD vanilla flavored into the cluster.**
+
+```bash
+$ python3 entrypoint.py -c rke -c argocd install
+```
 
 ---
 
