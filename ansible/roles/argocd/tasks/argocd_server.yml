@@ -19,6 +19,7 @@
 
 - name: "Deploy ArgoCD."
   kubernetes.core.helm:
+    atomic: True
     name: argo
     chart_ref: argo/argo-cd
     release_namespace: "{{ cluster.addons.argocd.namespace | default('argocd') }}"
