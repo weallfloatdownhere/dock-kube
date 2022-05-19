@@ -1,7 +1,7 @@
 - hosts: localhost
   gather_facts: True
   environment:
-    ANSIBLE_CONFIG: /usr/share/bin/ansible.cfg
+    ANSIBLE_CONFIG: /etc/ansible/ansible.cfg
   tasks:
   - name: "Generate hosts list from the provided config.yml file."
     add_host:
@@ -19,7 +19,7 @@
 - hosts: lst_nodes
   gather_facts: True
   environment:
-    ANSIBLE_CONFIG: /usr/share/bin/ansible.cfg
+    ANSIBLE_CONFIG: /etc/ansible/ansible.cfg
   tasks:
   - name: "Install prerequisites on all nodes."
     include_tasks: ansible/rke/tasks/nodes.yml
@@ -27,11 +27,11 @@
 - hosts: localhost
   gather_facts: True
   environment:
-    ANSIBLE_CONFIG: /usr/share/bin/ansible.cfg
+    ANSIBLE_CONFIG: /etc/ansible/ansible.cfg
   tasks:
-  - name: "Run RKE installer."
-    include_tasks: ansible/rke/tasks/rke.yml
-    when: ("rke" in triggers|default([])) or ("argocd" in triggers|default([]))
+# - name: "Run RKE installer."
+#   include_tasks: ansible/rke/tasks/rke.yml
+#   when: ("rke" in triggers|default([])) or ("argocd" in triggers|default([]))
 
   - name: "Deploy ArgoCD."
     include_tasks: ansible/argocd/tasks/argocd.yml
