@@ -1,3 +1,13 @@
+- name: Confirm that the kubeconfig file is exists
+  stat:
+    path: "{{ workspace_directory }}/kube_config_cluster.yml"
+  register: kubeconfig_exists
+
+- name: Fail if the kubeconfig doesnt exists since its a dependency.
+  fail:
+    msg: "Cant find the kubeconfig file."
+  when: not kubeconfig_exists.stat.exists
+
 - name: Check if a values files is provided for argocd.
   stat:
     path: "{{ workspace_directory }}/values.yaml"
