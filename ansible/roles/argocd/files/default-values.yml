@@ -1,0 +1,12 @@
+dex:
+  enabled: false
+
+server:
+  extraArgs:
+    - --insecure
+
+configs:
+  secret:
+    createSecret: true
+    argocdServerAdminPassword: "$2a$10$wxm/M7wFabm03cj.CZIV3.gyALCPLzceGKA520M3FAq5fuGY.ov1e"
+    

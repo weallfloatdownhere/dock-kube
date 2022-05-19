@@ -6,7 +6,7 @@
 
 - name: Create/update RKE config file
   template:
-    src: "{{playbook_dir}}/ansible/rke/templates/cluster.yml.j2"
+    src: "templates/cluster.yml.j2"
     dest: "{{ workspace_directory }}/cluster.yml"
     mode: u=rw,g=r,o=
   register: rke_cluster_config

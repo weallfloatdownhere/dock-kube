@@ -1,0 +1,3 @@
+- name: "Deploy ArgoCD if conditions are met."
+  include_tasks: argocd_helm.yml
+  when: (cluster.addons.argocd.enabled | default(False) | bool) and (argocd_deployment_method | default('helm') == 'helm')

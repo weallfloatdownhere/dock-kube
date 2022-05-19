@@ -30,8 +30,8 @@ RUN ansible-galaxy collection install community.general
 RUN ansible-galaxy collection install kubernetes.core
 
 RUN mkdir -p /usr/share/bin /mounted /root/.ssh
+COPY ./ansible/ansible.cfg /etc/ansible/ansible.cfg
 COPY ./ansible /usr/share/bin/ansible
-COPY ./ansible.cfg /etc/ansible/ansible.cfg
-COPY ./playbook.yml /usr/share/bin/playbook.yml
+
 
 ENTRYPOINT ["python3", "/usr/share/bin/ansible/entrypoint.py"]

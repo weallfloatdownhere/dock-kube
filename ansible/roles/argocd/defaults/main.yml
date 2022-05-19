@@ -1,9 +1,11 @@
 kubectl_bin_path: /usr/bin/kubectl
 workspace_directory: "{{ ansible_env.HOME | default('/root') }}/rke"
 
+argocd_deployment_method: helm
+
 cluster:
   addons:
     argocd:
       enabled: True
-      version: 4.6.0
+      version: 4.5.12
       namespace: 'argocd'

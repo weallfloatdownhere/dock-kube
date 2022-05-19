@@ -4,7 +4,6 @@ from ast import arg
 from logging import raiseExceptions
 import subprocess, argparse
 from argparse import RawTextHelpFormatter
-import os.path
 from os import path
 
 USAGE="""
@@ -23,7 +22,7 @@ EXAMPLES
 
 CONST_SHARED_DIR_PATH='/root/rke'
 CONST_CONFIG_PATH=f'{CONST_SHARED_DIR_PATH}/config.yml'
-CONST_PLAYBOOK_PATH='/usr/share/bin/playbook.yml'
+CONST_PLAYBOOK_PATH='/usr/share/bin/ansible/playbook.yml'
 
 def start_playbook(cmd=None):
     try:

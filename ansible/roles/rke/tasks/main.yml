@@ -1,0 +1,16 @@
+# output : stamped_file_found
+- name: "Stamping file."
+  include_tasks: stamping.yml
+  when: 'step == "nodes"'
+
+- name: "Host system setup."
+  include_tasks: host.yml
+  when: 'step == "host"'
+
+- name: "Nodes system setup."
+  include_tasks: nodes.yml
+  when: 'step == "nodes" and stamped_file_found == True'
+
+- name: "Execute RKE process."
+  include_tasks: rke.yml
+  when: 'step == "rke"'

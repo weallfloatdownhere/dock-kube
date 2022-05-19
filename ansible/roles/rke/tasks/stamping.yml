@@ -1,0 +1,17 @@
+- name: Check if the dummy files is older than the specified time.
+  find:
+    paths: '{{ stamped_file.path | default("~/.devopsed.stamp") }}'
+    age: '{{stamped_file.older_than|default("1d")}}'
+    file_type: file
+    hidden: True
+  register: reg_stamped_file_found
+
+- set_fact:
+    stamped_file_found: '{{ False if reg_stamped_file_found.files | default([]) | length > 0 else True }}'
+
+- name: Create the stamped file if it doesnt meets the criterias.
+  copy:
+    content: ""
+    dest: '{{ stamped_file.path | default("~/.devopsed.stamp") }}'
+    force: no
+  when: stamped_file_found
