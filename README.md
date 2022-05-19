@@ -66,12 +66,12 @@ $ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest [COMPON
 
 # *<ins>Parameters.</ins>*
 
-| parameter         | description                                     | cmd             | default | type   | required | choices          | dependencies                          |
-| :---------------- | :---------------------------------------------- | :-------------- | :------ | :----- | :------- | :--------------- | :------------------------------------ |
-| task              | Command execution mode                          |                 | install | string | yes      | {install,remove} | {install,remove}                      |
-| rke               | Install Kubernetes on target nodes              | -c, --component |         | string |          |                  | `config.yml` in the current directory |
-| argocd            | Deploy ArgoCD into the cluster                  | -c, --component |         | string |          |                  | Kubernetes installed                  |
-| op-sealed-secrets | Deploy Sealed secrets operator into the cluster | -c, --component |         | string |          |                  | Kubernetes installed                  |
+| parameter         | description                                     | cmd  | default | type   | required | choices          | dependencies                          |
+| :---------------- | :---------------------------------------------- | :--- | :------ | :----- | :------- | :--------------- | :------------------------------------ |
+| task              | Command execution mode                          |      | install | string | yes      | {install,remove} | {install,remove}                      |
+| rke               | Install Kubernetes on target nodes              | -c   |         | string |          |                  | `config.yml` in the current directory |
+| argocd            | Deploy ArgoCD into the cluster                  | -c   |         | string |          |                  | Kubernetes installed                  |
+| op-sealed-secrets | Deploy Sealed secrets operator into the cluster | -c   |         | string |          |                  | Kubernetes installed                  |
 
 
 ## *<ins>Examples.</ins>*
