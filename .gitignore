@@ -4,3 +4,4 @@
 .history
 config.yml
 *.log
+*.out

@@ -8,5 +8,5 @@ server:
 configs:
   secret:
     createSecret: true
-    argocdServerAdminPassword: "$2a$10$wxm/M7wFabm03cj.CZIV3.gyALCPLzceGKA520M3FAq5fuGY.ov1e"
+    argocdServerAdminPassword: "$2y$10$DulDL6kv6ABYwcz4SBxtiOevBjw7rdUgW6wBbmE3/RP6EvaAMBcde"
     
