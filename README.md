@@ -4,6 +4,8 @@
 
 ---
 
+![Animation](https://user-images.githubusercontent.com/102635491/169345280-b262c112-b55b-4a07-9600-e31e0fbfa097.gif)
+
 # *<ins>Installation.</ins>*
 
 ***Minimum requirements***
