@@ -15,6 +15,7 @@
 ```bash
 # Ubuntu >= 18.04
 $ sudo apt -y install curl git make
+
 # Archlinux
 $ sudo pacman -S curl git make --needed --no-confirm
 ```
@@ -24,6 +25,7 @@ $ sudo pacman -S curl git make --needed --no-confirm
 ```bash
 # Ubuntu >= 18.04
 $ sudo apt -y install docker.io
+
 # Archlinux
 $ sudo pacman -S docker --needed --no-confirm
 ```
@@ -71,8 +73,8 @@ $ python3 entrypoint.py [PARAMETERS]
 | parameter | description                    | cmd                 | default | type   | required | choices          | dependencies         |
 | :-------- | :----------------------------- | :------------------ | :------ | :----- | :------- | :--------------- | :------------------- |
 | task      | Command execution mode         |                     | install | string | yes      | {install,remove} | {install,remove}     |
-| rke       | Install Kubernetes on nodes    | '-c', '--component' | rke     | string |          |                  |                      |
-| argocd    | Deploy ArgoCD into the cluster | '-c', '--component' | argocd  | string |          |                  | Kubernetes installed |
+| rke       | Install Kubernetes on nodes    | -c',    --component | rke     | string |          |                  |                      |
+| argocd    | Deploy ArgoCD into the cluster | -c',    --component | argocd  | string |          |                  | Kubernetes installed |
 
 ---
 
