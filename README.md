@@ -70,11 +70,11 @@ $ python3 entrypoint.py [PARAMETERS]
 
 # *<ins>Parameters.</ins>*
 
-| parameter | description                    | cmd                 | default | type   | required | choices          | dependencies         |
-| :-------- | :----------------------------- | :------------------ | :------ | :----- | :------- | :--------------- | :------------------- |
-| task      | Command execution mode         |                     | install | string | yes      | {install,remove} | {install,remove}     |
-| rke       | Install Kubernetes on nodes    | -c',    --component | rke     | string |          |                  |                      |
-| argocd    | Deploy ArgoCD into the cluster | -c',    --component | argocd  | string |          |                  | Kubernetes installed |
+| parameter | description                    | cmd                | default | type   | required | choices          | dependencies         |
+| :-------- | :----------------------------- | :----------------- | :------ | :----- | :------- | :--------------- | :------------------- |
+| task      | Command execution mode         |                    | install | string | yes      | {install,remove} | {install,remove}     |
+| rke       | Install Kubernetes on nodes    | -c,    --component | rke     | string |          |                  |                      |
+| argocd    | Deploy ArgoCD into the cluster | -c,    --component | argocd  | string |          |                  | Kubernetes installed |
 
 ---
 
@@ -115,7 +115,7 @@ $ python3 entrypoint.py [PARAMETERS]
 
 # *<ins>Examples.</ins>*
 
-## Docker version
+## Docker version *`(Recommended)`*
 
 **Install Kubernetes `ONLY` into the cluster.**
 
@@ -123,13 +123,15 @@ $ python3 entrypoint.py [PARAMETERS]
 $ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest -c rke install
 ```
 
-**Install Kubernetes and ArgoCD vanilla flavored into the cluster.**
+**Install Kubernetes and ArgoCD Gitops engine.**
 
 ```bash
 $ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest -c rke -c argocd install
 ```
 
 ## Client version
+
+<ins>*Currently in beta test.*</ins>
 
 **Install Kubernetes `ONLY` into the cluster.**
 
