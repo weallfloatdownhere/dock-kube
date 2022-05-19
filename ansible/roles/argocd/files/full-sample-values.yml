@@ -1,0 +1,44 @@
+dex:
+  enabled: false
+
+server:
+  extraArgs:
+    - --insecure
+
+  additionalApplications: 
+  - name: argo-demo
+    namespace: shared-services
+    project: argo-demo
+    source:
+      repoURL: git@github.com:roman-hds/argo-demo.git
+      path: k8s/manifests/
+    destination:
+      server: https://kubernetes.default.svc
+      namespace: default
+    syncPolicy: 
+      automated: 
+        selfHeal: true
+
+  additionalProjects: 
+  - name: argo-demo
+    namespace: shared-services
+    sourceRepos:
+    - git@github.com:roman-hds/argo-demo.git
+    destinations:
+    - namespace: default
+      server: https://kubernetes.default.svc
+ 
+configs:
+  knownHosts:
+    data:
+      ssh_known_hosts: |
+         # ssh known hosts data. You can use output from ssh-keyscan or the contents from an ssh_known_hosts file.
+
+  credentialTemplates: 
+    ssh-creds:
+      url: git@github.com:roman-hds/argo-demo.git
+      
+  secret:
+    createSecret: true
+    argocdServerAdminPassword: "$2a$10$wxm/M7wFabm03cj.CZIV3.gyALCPLzceGKA520M3FAq5fuGY.ov1e"
+    

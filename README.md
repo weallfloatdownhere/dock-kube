@@ -118,6 +118,12 @@ $ python3 entrypoint.py [PARAMETERS]
 
 - [**ArgoCD**](https://github.com/argoproj/argo-cd)
 
+  ***Configuration***
+
+  *In order to overwrite the default values, create a file name `argocd-values.yaml` in your workspace directory.*
+  *If `argocd-values.yaml` is not present, the [default settings are applied].(ansible/roles/argocd/files/default-values.yml)*
+  *You can also find a full configuration examples [HERE].(ansible/roles/argocd/files/full-sample-values.yml)*
+
 - [**Sealed-secrets operator**](https://github.com/bitnami-labs/sealed-secrets)
 
 </br>
