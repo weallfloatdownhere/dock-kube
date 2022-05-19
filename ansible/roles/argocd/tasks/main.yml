@@ -1,4 +1,4 @@
 - name: "Deploy ArgoCD if conditions are met."
   include_tasks: argocd_server.yml
   when: (cluster.addons.argocd.enabled | default(False) | bool) and
-        (step | default("server") == "server")
+        (step | default("deploy") == "deploy")

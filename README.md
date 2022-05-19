@@ -54,19 +54,27 @@ $ sudo reboot
 $ docker pull silentreatmen7/dock-kube:latest
 ```
 
----
-
-</br>
-
 # *<ins>Usage.</ins>*
 
 **Please note that this step is assuming that there is a valid `config.yml` file in the current directory.**
 
 ```bash
-$ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest [PARAMETERS]
+$ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest [COMPONENT(S)] [TASK]
 ```
 
-# *<ins>Examples.</ins>*
+---
+
+# *<ins>Parameters.</ins>*
+
+| parameter         | description                                     | cmd             | default | type   | required | choices          | dependencies                          |
+| :---------------- | :---------------------------------------------- | :-------------- | :------ | :----- | :------- | :--------------- | :------------------------------------ |
+| task              | Command execution mode                          |                 | install | string | yes      | {install,remove} | {install,remove}                      |
+| rke               | Install Kubernetes on target nodes              | -c, --component |         | string |          |                  | `config.yml` in the current directory |
+| argocd            | Deploy ArgoCD into the cluster                  | -c, --component |         | string |          |                  | Kubernetes installed                  |
+| op-sealed-secrets | Deploy Sealed secrets operator into the cluster | -c, --component |         | string |          |                  | Kubernetes installed                  |
+
+
+## *<ins>Examples.</ins>*
 
 **Install Kubernetes `ONLY` into the cluster.**
 
@@ -82,55 +90,43 @@ $ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest -c rke 
 
 ---
 
-# *<ins>Parameters.</ins>*
+# *<ins>Configuration file values.</ins>*
 
-| parameter | description                    | cmd                | default | type   | required | choices          | dependencies         |
-| :-------- | :----------------------------- | :----------------- | :------ | :----- | :------- | :--------------- | :------------------- |
-| task      | Command execution mode         |                    | install | string | yes      | {install,remove} | {install,remove}     |
-| rke       | Install Kubernetes on nodes    | -c,    --component | rke     | string |          |                  |                      |
-| argocd    | Deploy ArgoCD into the cluster | -c,    --component | argocd  | string |          |                  | Kubernetes installed |
+| value                                 | description                        | default              | type   | required |
+| :------------------------------------ | :--------------------------------- | :------------------- | :----- | :------- |
+| cluster.domain                        | organization domain                | local.local          | string | yes      |
+| cluster.environment                   | target cluster environment         | dev                  | string | yes      |
+| cluster.user                          | nodes sudo user                    | admin                | string | yes      |
+| cluster.password                      | nodes user's sudo password         | admin                | string | yes      |
+| cluster.nodes                         | list of nodes in the cluster       | []                   | list   | yes      |
+| cluster.nodes.address                 | node ip address                    | None                 | string | yes      |
+| cluster.nodes.hostname                | node hostname                      | cluster              | string | yes      |
+| cluster.addons                        | dictionary of addons               | {}                   | dict   | no       |
+| cluster.addons.etcd_snapshots.enabled | enabling etcd snapshots            | False                | bool   | no       |
+| cluster.addons.argocd.enabled         | enabling ArgoCD installation       | False                | bool   | no       |
+| cluster.addons.argocd.flavor          | specify ArgoCD installation flavor | vanilla              | string | no       |
+| networking.enable_default             | use default network cni            | False                | bool   | no       |
+| networking.custom_network_cni         | custom network cni name            | None                 | string | no       |
+| ingress.enable_default                | use default ingress controller     | False                | bool   | no       |
+| ingress.custom_ingress_controller     | custom ingress controller name     | nginx                | string | no       |
+| docker_socket_path                    | docker daemon path                 | /var/run/docker.sock | string | no       |
+| workspace_directory                   | output files destination directory | $HOME/rke            | string | no       |
 
 ---
 
-# *<ins>Configuration file values.</ins>*
-
-| value                                 | description                                                | default              | type   | required |
-| :------------------------------------ | :--------------------------------------------------------- | :------------------- | :----- | :------- |
-| cluster.domain                        | organization domain                                        | local.local          | string | yes      |
-| cluster.environment                   | target cluster environment                                 | dev                  | string | yes      |
-| cluster.user                          | nodes sudo user                                            | admin                | string | yes      |
-| cluster.password                      | nodes user's sudo password                                 | admin                | string | yes      |
-| cluster.nodes                         | list of nodes in the cluster                               | []                   | list   | yes      |
-| cluster.nodes.address                 | node ip address                                            | None                 | string | yes      |
-| cluster.nodes.hostname                | node hostname                                              | cluster              | string | yes      |
-| cluster.addons                        | dictionary of addons                                       | {}                   | dict   | no       |
-| cluster.addons.etcd_snapshots.enabled | enabling etcd snapshots                                    | False                | bool   | no       |
-| cluster.addons.argocd.enabled         | enabling ArgoCD installation                               | False                | bool   | no       |
-| cluster.addons.argocd.version         | ArgoCD version to deploy                                   | 4.5.12               | string | no       |
-| cluster.addons.sealed_secrets.enabled | enabling Sealed secrets operator (recommended with argocd) | False                | bool   | no       |
-| cluster.addons.sealed_secrets.version | Sealed secrets operator version to deploy                  | 1.16.1               | string | no       |
-| networking.enable_default             | use default network cni                                    | False                | bool   | no       |
-| networking.custom_network_cni         | custom network cni name                                    | None                 | string | no       |
-| ingress.enable_default                | use default ingress controller                             | False                | bool   | no       |
-| ingress.custom_ingress_controller     | custom ingress controller name                             | nginx                | string | no       |
-| docker_socket_path                    | docker daemon path                                         | /var/run/docker.sock | string | no       |
-| workspace_directory                   | output files destination directory                         | $HOME/rke            | string | no       |
-
-</br>
-
-# *<ins>Addons.</ins>*
+# *<ins>Addons (Operators).</ins>*
 
 - [**ArgoCD**](https://github.com/argoproj/argo-cd)
 
   ***Configuration***
 
   *In order to overwrite the default values, create a file name `argocd-values.yaml` in your workspace directory.*
-  *If `argocd-values.yaml` is not present, the [default settings are applied].(ansible/roles/argocd/files/default-values.yml)*
-  *You can also find a full configuration examples [HERE].(ansible/roles/argocd/files/full-sample-values.yml)*
+  *If `argocd-values.yaml` is not present, the [default settings are applied](ansible/roles/argocd/files/default-values.yml)*
+  *You can also find a full configuration examples [HERE](ansible/roles/argocd/files/full-sample-values.yml)*
 
 - [**Sealed-secrets operator**](https://github.com/bitnami-labs/sealed-secrets)
 
-</br>
+---
 
 # *<ins>Samples.</ins>*
 
@@ -141,43 +137,3 @@ $ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest -c rke 
 - [**Basic multiple nodes configuration.**](docs/samples/configurations/config_multiple_nodes.yml)
 
 - [**Basic single node configuration.**](docs/samples/configurations/config_single_node.yml)
-
-</br>
-
----
-
-</br>
-
-# *<ins>Examples.</ins>*
-
-## Docker version *`(Recommended)`*
-
-**Install Kubernetes `ONLY` into the cluster.**
-
-```bash
-$ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest -c rke install
-```
-
-**Install Kubernetes and ArgoCD Gitops engine.**
-
-```bash
-$ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest -c rke -c argocd install
-```
-
-</br>
-
-## Client version
-
-<ins>*Currently in beta test.*</ins>
-
-**Install Kubernetes `ONLY` into the cluster.**
-
-```bash
-$ python3 entrypoint.py -c rke install
-```
-
-**Install Kubernetes and ArgoCD vanilla flavored into the cluster.**
-
-```bash
-$ python3 entrypoint.py -c rke -c argocd install
-```

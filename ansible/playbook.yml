@@ -36,9 +36,16 @@
       step: rke
     when: ("rke" in triggers|default([])) or ("argocd" in triggers|default([]))
 
+  - name: "Deploy Sealed Secrets operator."
+    include_role: 
+      name: sealed-secrets
+    vars:
+      step: deploy
+    when: ("argocd" in triggers|default([])) or ("op-sealed-secrets" in triggers|default([]))
+
   - name: "Deploy ArgoCD."
     include_role: 
       name: argocd
     vars:
-      step: server
+      step: deploy
     when: ("argocd" in triggers|default([]))
