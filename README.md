@@ -119,11 +119,16 @@ $ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest -c rke 
   ```yaml
  ---
   cluster:
+    # Organization domain name.
     domain: local.local
+    # Target environement.
     environment: dev
-    user: admin
-    password: admin
+    # Remote nodes sudo user.
+    user: anon
+    # Remote nodes sudo user password.
+    password: toor
   
+    # List of nodes to include in the cluster.
     nodes:
       - address: 10.0.0.175
         hostname: node1
