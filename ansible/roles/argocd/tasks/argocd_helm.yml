@@ -15,9 +15,9 @@
 - name: Add ArgoCD helm repository.
   kubernetes.core.helm_repository:
     name: argo
-    repo_url: https://argoproj.github.io/argo-helm
+    repo_url: "{{ argocd_helm_charts_url }}"
 
-- name: "Deploy ArgoCD {{ cluster.addons.argocd.version | default('4.5.12') }}"
+- name: "Deploy ArgoCD."
   kubernetes.core.helm:
     name: argo
     chart_ref: argo/argo-cd
