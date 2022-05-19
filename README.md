@@ -112,6 +112,86 @@ $ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest -c rke 
 | docker_socket_path                    | docker daemon path                 | /var/run/docker.sock | string | no       |
 | workspace_directory                   | output files destination directory | $HOME/rke            | string | no       |
 
+<details>
+
+<summary><font size=4>Minimal config.yml example.</font></summary>
+
+  ```yaml
+ ---
+  cluster:
+    domain: local.local
+    environment: dev
+    user: admin
+    password: admin
+  
+    nodes:
+      - address: 10.0.0.175
+        hostname: node1
+  ```
+
+</details>
+
+<details>
+
+<summary><font size=4>Full config.yml example.</font></summary>
+
+  ```yaml
+  ---
+  cluster:
+    # Organization domain name.
+    domain: local.local
+    # Target environement.
+    environment: dev
+    # Remote nodes sudo user.
+    user: anon
+    # Remote nodes sudo user password.
+    password: toor
+  
+    # List of nodes to include in the cluster.
+    nodes:
+      - address: 10.0.0.175
+        hostname: node1
+      - address: 10.0.0.176
+        hostname: node1
+      - address: 10.0.0.177
+        hostname: node3
+  
+    # List of addons to deploy / configure.
+    addons:
+      # RKE cluster snapshots service.
+      etcd_snapshots:
+        enabled: True
+  
+      # ArgoCD Gitops engine deployment.
+      argocd:
+        enabled: True
+        version: 4.5.12
+        namespace: 'argocd'
+  
+      # Sealed secrets operator.
+      sealed_secrets:
+        enabled: True
+        version: 1.16.1
+        namespace: 'shared-services'
+  
+  networking:
+    # Default: calico
+    enable_default: True
+    # The custom network cni to use in case   enable_default is False
+    custom_network_cni: cilium
+  
+  ingress:
+    # Default: nginx
+    enable_default: True
+    # The custom ingress controller to use in case   enable_default is False
+    custom_ingress_controller: nginx
+  
+  # Could be /var/run/docker.sock too.
+  docker_socket_path: /var/run/docker.sock
+  ```
+
+</details>
+
 ---
 
 # *<ins>Addons (Operators).</ins>*
