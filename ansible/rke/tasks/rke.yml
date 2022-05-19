@@ -19,7 +19,7 @@
   when: ("install" in triggers|default([])) and ("rke" in triggers|default([]))
 
 - name: Uninstall RKE from nodes.
-  shell: rke remove --force | tee {{ workspace_directory }}/rke-up.log
+  shell: rke remove --force | tee {{ workspace_directory }}/rke-remove.log
   args:
     chdir: "{{ workspace_directory }}/"
   when: ("remove" in triggers|default([])) and ("rke" in triggers|default([]))

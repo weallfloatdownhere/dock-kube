@@ -33,6 +33,5 @@ RUN mkdir -p /usr/share/bin /mounted /root/.ssh
 COPY ./ansible /usr/share/bin/ansible
 COPY ./ansible.cfg /etc/ansible/ansible.cfg
 COPY ./playbook.yml /usr/share/bin/playbook.yml
-COPY ./argocd /usr/share/bin/argocd
 
 ENTRYPOINT ["python3", "/usr/share/bin/ansible/entrypoint.py"]

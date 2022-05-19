@@ -1,13 +1,26 @@
+- name: Check if a values files is provided for argocd.
+  stat:
+    path: "{{ workspace_directory }}/values.yaml"
+  register: argocd_custom_values
 
-- name: "Deploy ArgoCD into the cluster."
-  set_fact:
-    resources: "{{ lookup('kubernetes.core.kustomize', binary_path='/usr/bin/kubectl', dir=kustomize_path) }}"
-  vars:
-    kustomize_path: "{{playbook_dir}}/argocd/{{cluster.addons.argocd.flavor|default('vanilla')}}/{{cluster.environment}}"
+- name: Add ArgoCD helm repository.
+  kubernetes.core.helm_repository:
+    name: argo-cd
+    repo_url: "{{ argocd_helm_repo_url }}"
 
-- name: "Apply Kustomize resources."
-  kubernetes.core.k8s:
-    state: present
-    definition: "{{ resources }}"
-    kubeconfig: "{{workspace_directory}}/kube_config_cluster.yml"
-    wait: True
+- name: "Deploy ArgoCD {{ cluster.addons.argocd.version | default('4.6.0') }}"
+  kubernetes.core.helm:
+    name: argocd
+    chart_ref: argo-cd
+    namespace: "{{ cluster.addons.argocd.namespace | default('argocd') }}"
+    create_namespace: True
+    chart_version: "{{ cluster.addons.argocd.version | default('4.6.0') }}"
+    update_repo_cache: true
+    kubeconfig: "{{ workspace_directory }}/kube_config_cluster.yml"
+    values: >-
+      {% set out=(lookup('template', '../defaults/values.yml') | from_yaml) %}
+      {% if argocd_custom_values.stat.exists == True %}
+      {% set out = (lookup('template', '{{ workspace_directory }}/values.yaml') | from_yaml) %}
+      {% endif %}
+      {{ out }}
+      

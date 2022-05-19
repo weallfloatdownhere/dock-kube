@@ -1,8 +1,0 @@
-apiVersion: v1
-kind: Service
-metadata:
-  name: argo-cd-service
-spec:
-  ports:
-  - name: argo-cd-app
-    port: 80

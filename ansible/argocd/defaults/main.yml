@@ -1,9 +1,9 @@
 kubectl_bin_path: /usr/bin/kubectl
-
 workspace_directory: "{{ ansible_env.HOME | default('/root') }}/rke"
-
+argocd_helm_repo_url: https://argoproj.github.io/argo-helm
 cluster:
   addons:
     argocd:
       enabled: True
-      flavor: vanilla
+      version: 4.6.0
+      namespace: 'argocd'
