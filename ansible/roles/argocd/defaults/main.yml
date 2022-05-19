@@ -1,7 +1,5 @@
 kubectl_bin_path: /usr/bin/kubectl
 workspace_directory: "{{ ansible_env.HOME | default('/root') }}/rke"
-
-argocd_deployment_method: helm
 argocd_helm_charts_url: https://argoproj.github.io/argo-helm
 
 cluster:

@@ -1,0 +1,9 @@
+workspace_directory: "{{ ansible_env.HOME | default('/root') }}/rke"
+sealed_secrets_helm_charts_url: https://bitnami-labs.github.io/sealed-secrets
+
+cluster:
+  addons:
+    sealed_secrets:
+      enabled: True
+      version: 1.16.1
+      namespace: 'shared-services'

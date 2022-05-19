@@ -39,4 +39,6 @@
   - name: "Deploy ArgoCD."
     include_role: 
       name: argocd
+    vars:
+      step: server
     when: ("argocd" in triggers|default([]))
