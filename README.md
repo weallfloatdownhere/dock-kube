@@ -1,12 +1,12 @@
-# ***<ins>Dock-kube.</ins>***
+# ***<ins>Devops the Gitops way walkthrough.</ins>***
 
-***Containers Orchestration + Gitops opinionated installer facilitating the process of RKE & ArgoCD powered on-premise Kubernetes cluster installations.***
+***Dock-kube - Containers Orchestration + Gitops opinionated installer facilitating the process of RKE & ArgoCD powered on-premise Kubernetes cluster installations.***
 
 ---
 
 ![Animation](https://user-images.githubusercontent.com/102635491/169345280-b262c112-b55b-4a07-9600-e31e0fbfa097.gif)
 
-# *<ins>Installation.</ins>*
+# *<ins>Requirements.</ins>*
 
 ***Minimum requirements***
 
@@ -58,17 +58,25 @@ $ docker pull silentreatmen7/dock-kube:latest
 
 **Please note that this step is assuming that there is a valid `config.yml` file in the current directory.**
 
-### *Docker version. (`recommended`).*
-
 ```bash
 $ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest [PARAMETERS]
 ```
 
-### *Client version.*
+# *<ins>Examples.</ins>*
+
+**Install Kubernetes `ONLY` into the cluster.**
 
 ```bash
-$ python3 entrypoint.py [PARAMETERS]
+$ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest -c rke install
 ```
+
+**Install Kubernetes and ArgoCD Gitops engine.**
+
+```bash
+$ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest -c rke -c argocd install
+```
+
+---
 
 # *<ins>Parameters.</ins>*
 
@@ -79,7 +87,6 @@ $ python3 entrypoint.py [PARAMETERS]
 | argocd    | Deploy ArgoCD into the cluster | -c,    --component | argocd  | string |          |                  | Kubernetes installed |
 
 ---
-
 
 # *<ins>Configuration file values.</ins>*
 
@@ -103,7 +110,9 @@ $ python3 entrypoint.py [PARAMETERS]
 | docker_socket_path                    | docker daemon path                 | /var/run/docker.sock | string | no       |
 | workspace_directory                   | output files destination directory | $HOME/rke            | string | no       |
 
-## **Samples.**
+---
+
+# *<ins>More examples.</ins>*
 
 [**Full configuration file example.**](docs/samples/config_full.yml)
 
@@ -112,37 +121,3 @@ $ python3 entrypoint.py [PARAMETERS]
 [**Basic multiple nodes configuration.**](docs/samples/config_multiple_nodes.yml)
 
 [**Basic single node configuration.**](docs/samples/config_single_node.yml)
-
----
-
-# *<ins>Examples.</ins>*
-
-## Docker version *`(Recommended)`*
-
-**Install Kubernetes `ONLY` into the cluster.**
-
-```bash
-$ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest -c rke install
-```
-
-**Install Kubernetes and ArgoCD Gitops engine.**
-
-```bash
-$ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest -c rke -c argocd install
-```
-
-## Client version
-
-<ins>*Currently in beta test.*</ins>
-
-**Install Kubernetes `ONLY` into the cluster.**
-
-```bash
-$ python3 entrypoint.py -c rke install
-```
-
-**Install Kubernetes and ArgoCD vanilla flavored into the cluster.**
-
-```bash
-$ python3 entrypoint.py -c rke -c argocd install
-```
