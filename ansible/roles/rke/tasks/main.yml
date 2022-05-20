@@ -11,6 +11,10 @@
   include_tasks: nodes.yml
   when: 'step == "nodes" and stamped_file_found == True'
 
-- name: "Execute RKE process."
-  include_tasks: rke.yml
-  when: 'step == "rke"'
+- name: "Uninstall Kubernetes."
+  include_tasks: rke-remove.yml
+  when: 'step == "rke-remove"'
+
+- name: "Install Kubernetes."
+  include_tasks: rke-up.yml
+  when: 'step == "rke-up"'

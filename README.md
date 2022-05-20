@@ -88,6 +88,12 @@ $ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest -c rke 
 $ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest -c rke -c argocd install
 ```
 
+**Uninstall everything.**
+
+```bash
+$ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest remove
+```
+
 ---
 
 # *<ins>Configuration file values.</ins>*

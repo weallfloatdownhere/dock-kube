@@ -29,25 +29,40 @@
 - hosts: localhost
   gather_facts: True
   tasks:
-  - name: "Run RKE installer."
+  - name: "Set execution mode before we start."
+    set_fact:
+      exec_mode: |-
+        {% set mode = '' %}
+        {% if "rke" in triggers and "install" in triggers %}
+        {% set mode = 'up' %}
+        {% elif "argocd" in triggers and "install" in triggers %}
+        {% set mode = 'up' %}
+        {% elif "remove" in triggers %}
+        {% set mode = 'remove' %}
+        {% endif %}
+        {{ mode }}
+
+  - name: "Run Kubernetes RKE binary in the specified mode."
     include_role: 
       name: rke
     vars:
-      step: rke
-    when: ("rke" in triggers|default([])) or 
-          ("argocd" in triggers|default([]))
+      step: "rke-{{exec_mode}}"
+    when: exec_mode != ''
 
   - name: "Deploy Sealed Secrets operator."
     include_role: 
       name: sealed-secrets
     vars:
       step: deploy
-    when: ("argocd" in triggers|default([])) or 
-          ("op-sealed-secrets" in triggers|default([]))
+    when: ("install" in triggers) and
+          ("argocd" in triggers) or 
+          ("op-sealed-secrets" in triggers)
 
   - name: "Deploy ArgoCD."
     include_role: 
       name: argocd
     vars:
       step: deploy
-    when: ("argocd" in triggers|default([]))
+    when: ("install" in triggers|default([])) and
+          ("argocd" in triggers|default([])) 
+          

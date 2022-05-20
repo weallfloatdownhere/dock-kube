@@ -9,6 +9,11 @@
 - set_fact:
     stamped_file_found: '{{ False if reg_stamped_file_found.files | default([]) | length > 0 else True }}'
 
+- debug:
+    msg: 
+      - "{{ reg_stamped_file_found }}"
+      - "{{ stamped_file_found }}"
+
 - name: Create the stamped file if it doesnt meets the criterias.
   copy:
     content: ""

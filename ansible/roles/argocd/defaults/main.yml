@@ -1,5 +1,4 @@
 kubectl_bin_path: /usr/bin/kubectl
-workspace_directory: "{{ ansible_env.HOME | default('/root') }}/rke"
 argocd_helm_charts_url: https://argoproj.github.io/argo-helm
 
 cluster:
@@ -8,3 +7,5 @@ cluster:
       enabled: True
       version: 4.5.12
       namespace: 'argocd'
+
+workspace_directory: "{{ ansible_env.HOME | default('/root') }}/rke"

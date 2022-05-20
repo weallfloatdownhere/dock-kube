@@ -1,0 +1,23 @@
+- name: Create/update RKE config file
+  template:
+    src: "templates/cluster.yml.j2"
+    dest: "{{ workspace_directory }}/cluster.yml"
+    mode: u=rw,g=r,o=
+  register: rke_cluster_config
+
+- name: Run RKE installer
+  shell: rke up | tee {{ workspace_directory }}/rke-up.log
+  args:
+    chdir: "{{ workspace_directory }}/"
+
+- name: Ensure the resulting kube_config_cluster.yml is present.
+  stat:
+    path: "{{ workspace_directory }}/kube_config_cluster.yml"
+  register: kube_config_present
+
+- name: Ensure a kube_config_cluster.yml has been generated.
+  fail:
+    msg: 
+      - "FATAL - Something most likely went wrong since we cant find"
+      - "The resulting kubeconfig at : {{ workspace_directory }}/kube_config_cluster.yml"
+  when: not kube_config_present.stat.exists

@@ -9,6 +9,7 @@ RUN curl -L --silent https://github.com/rancher/rke/releases/download/v1.3.11/rk
 RUN curl -L --silent https://dl.k8s.io/release/v1.24.0/bin/linux/amd64/kubectl -o /bin/kubectl && chmod +x /bin/kubectl
 RUN curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 RUN helm plugin install https://github.com/databus23/helm-diff
+RUN curl -L --silent https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.17.5/kubeseal-0.17.5-linux-amd64.tar.gz | tar -C /usr/bin -xzv
 
 RUN pip3 install --no-cache-dir --no-cache setuptools==62.1.0
 RUN pip3 install --no-cache-dir --no-cache wheel==0.37.1
@@ -33,6 +34,5 @@ RUN ansible-galaxy collection install kubernetes.core
 RUN mkdir -p /usr/share/bin /mounted /root/.ssh
 COPY ./ansible/ansible.cfg /etc/ansible/ansible.cfg
 COPY ./ansible /usr/share/bin/ansible
-
 
 ENTRYPOINT ["python3", "/usr/share/bin/ansible/entrypoint.py"]

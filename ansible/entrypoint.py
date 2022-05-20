@@ -13,7 +13,7 @@ USAGE
 entrypoint.py [components] [task]
 ---------------------------------
 task:       {install, remove}
-components: {rke, argocd}
+components: {rke, argocd, sealed-secrets}
 ---------------------------------
 EXAMPLES
 * entrypoint.py -c rke install
@@ -33,8 +33,11 @@ def start_playbook(cmd=None):
 
 def generate_command(args=[]):
     command = ['ansible-playbook', '-i', 'localhost', '--extra-vars']
-    triggers = args.task + ',' + ','.join(args.components)
-    command.append("'" + '{"triggers": [%s]}' % triggers + "'")
+
+    triggers = [args.task]
+    if args.components != None: triggers.extend(args.components)
+    
+    command.append("'" + '{"triggers": [%s]}' % ','.join(triggers) + "'")
     if [path.exists(CONST_CONFIG_PATH)]: command.append(f'--extra-vars @{CONST_CONFIG_PATH}')
     command.append(CONST_PLAYBOOK_PATH)
     return ' '.join(command)
@@ -42,7 +45,7 @@ def generate_command(args=[]):
 def get_arguments():
     parser = argparse.ArgumentParser(description=USAGE, formatter_class=RawTextHelpFormatter)
     parser.add_argument('task', type=str, help='Task to execute', nargs='?', default='install', choices=['install', 'remove'])
-    parser.add_argument('-c', '--component', type=str, dest='components', action='append', choices=['rke', 'argocd'])
+    parser.add_argument('-c', '--component', type=str, dest='components', action='append', choices=['rke', 'argocd', 'sealed-secrets'])
     args = parser.parse_args()
     return args
 
