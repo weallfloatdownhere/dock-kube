@@ -135,11 +135,11 @@ $ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest remove
 
 # Nodes naming convention and nodes roles detection mechanic
 
-### ***You have probably noticed that you didnt assigned any roles to the nodes. This is because there is a roles detection mechanism inside the installer. The detection routine result is based on certains patterns in found in the value `cluster.nodes.hostname` of each nodes. Below is the conditions determining nodes roles attributions. <ins>Its also important to know that, if your `config.yml` file is only containing three(3) nodes or less, they automatically get `all possible roles attributed` to them.</ins>***
+### ***You have probably noticed that you didnt assigned any roles to the nodes. This is because there is a roles detection mechanism inside the installer. The detection routine result is based on certains patterns in found in the value `cluster.nodes.hostname` of each nodes. Below are the criterias that has to be met for a node to dynamically get roles attributed to it. <ins>Its also important to know that, if your `config.yml` file is only `containing three(3) nodes or less`, they automatically get `all possible roles attributed` to them.</ins>***
 
 </br>
 
-**if the cluster.nodes.hostname is containing either of these strings/patterns, its a `controleplane + etcd`**
+**if the cluster.nodes.hostname is containing either of these strings/patterns, its a `controlplane + etcd`**
 
 ```bash
 master  # eg: rke-master-1
