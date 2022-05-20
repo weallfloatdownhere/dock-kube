@@ -66,12 +66,12 @@ $ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest [COMPON
 
 # *<ins>Parameters.</ins>*
 
-| parameter         | description                                     | cmd  | default | type   | required | choices          | dependencies                          |
-| :---------------- | :---------------------------------------------- | :--- | :------ | :----- | :------- | :--------------- | :------------------------------------ |
-| task              | Command execution mode                          |      | install | string | yes      | {install,remove} | {install,remove}                      |
-| rke               | Install Kubernetes on target nodes              | -c   |         | string |          |                  | `config.yml` in the current directory |
-| argocd            | Deploy ArgoCD into the cluster                  | -c   |         | string |          |                  | Kubernetes installed                  |
-| op-sealed-secrets | Deploy Sealed secrets operator into the cluster | -c   |         | string |          |                  | Kubernetes installed                  |
+| parameter      | description                                     | cmd  | default | type   | required | choices          | dependencies                          |
+| :------------- | :---------------------------------------------- | :--- | :------ | :----- | :------- | :--------------- | :------------------------------------ |
+| task           | Command execution mode                          |      | install | string | yes      | {install,remove} | {install,remove}                      |
+| rke            | Install Kubernetes on target nodes              | -c   |         | string |          |                  | `config.yml` in the current directory |
+| argocd         | Deploy ArgoCD into the cluster                  | -c   |         | string |          |                  | Kubernetes installed                  |
+| sealed-secrets | Deploy Sealed secrets operator into the cluster | -c   |         | string |          |                  | Kubernetes installed                  |
 
 
 ## *<ins>Examples.</ins>*
@@ -92,25 +92,25 @@ $ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest -c rke 
 
 # *<ins>Configuration file values.</ins>*
 
-| value                                 | description                        | default              | type   | required |
-| :------------------------------------ | :--------------------------------- | :------------------- | :----- | :------- |
-| cluster.domain                        | organization domain                | local.local          | string | yes      |
-| cluster.environment                   | target cluster environment         | dev                  | string | yes      |
-| cluster.user                          | nodes sudo user                    | admin                | string | yes      |
-| cluster.password                      | nodes user's sudo password         | admin                | string | yes      |
-| cluster.nodes                         | list of nodes in the cluster       | []                   | list   | yes      |
-| cluster.nodes.address                 | node ip address                    | None                 | string | yes      |
-| cluster.nodes.hostname                | node hostname                      | cluster              | string | yes      |
-| cluster.addons                        | dictionary of addons               | {}                   | dict   | no       |
-| cluster.addons.etcd_snapshots.enabled | enabling etcd snapshots            | False                | bool   | no       |
-| cluster.addons.argocd.enabled         | enabling ArgoCD installation       | False                | bool   | no       |
-| cluster.addons.argocd.flavor          | specify ArgoCD installation flavor | vanilla              | string | no       |
-| networking.enable_default             | use default network cni            | False                | bool   | no       |
-| networking.custom_network_cni         | custom network cni name            | None                 | string | no       |
-| ingress.enable_default                | use default ingress controller     | False                | bool   | no       |
-| ingress.custom_ingress_controller     | custom ingress controller name     | nginx                | string | no       |
-| docker_socket_path                    | docker daemon path                 | /var/run/docker.sock | string | no       |
-| workspace_directory                   | output files destination directory | $HOME/rke            | string | no       |
+| value                                 | description                          | default              | type   | required |
+| :------------------------------------ | :----------------------------------- | :------------------- | :----- | :------- |
+| cluster.domain                        | organization domain                  | local.local          | string | yes      |
+| cluster.environment                   | target cluster environment           | dev                  | string | yes      |
+| cluster.user                          | nodes sudo user                      | admin                | string | yes      |
+| cluster.password                      | nodes user's sudo password           | admin                | string | yes      |
+| cluster.nodes                         | list of nodes in the cluster         | []                   | list   | yes      |
+| cluster.nodes.address                 | node ip address                      | None                 | string | yes      |
+| cluster.nodes.hostname                | node hostname                        | cluster              | string | yes      |
+| cluster.addons                        | dictionary of addons                 | {}                   | dict   | no       |
+| cluster.addons.etcd_snapshots.enabled | enabling Etcd snapshots              | False                | bool   | no       |
+| cluster.addons.argocd.enabled         | enabling ArgoCD installation         | False                | bool   | no       |
+| cluster.addons.sealed_secrets.enabled | enabling Sealed secrets installation | False                | string | no       |
+| networking.enable_default             | use default network cni              | True                 | bool   | no       |
+| networking.custom_network_cni         | custom network cni name              | None                 | string | no       |
+| ingress.enable_default                | use default ingress controller       | True                 | bool   | no       |
+| ingress.custom_ingress_controller     | custom ingress controller name       | nginx                | string | no       |
+| docker_socket_path                    | docker daemon path                   | /var/run/docker.sock | string | no       |
+| workspace_directory                   | output files destination directory   | $HOME/rke            | string | no       |
 
 <details>
 
@@ -124,10 +124,9 @@ $ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest -c rke 
     # Target environement.
     environment: dev
     # Remote nodes sudo user.
-    user: anon
+    user: admin
     # Remote nodes sudo user password.
-    password: toor
-  
+    password: admin
     # List of nodes to include in the cluster.
     nodes:
       - address: 10.0.0.175
@@ -175,9 +174,12 @@ $ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest -c rke 
   
       # Sealed secrets operator.
       sealed_secrets:
+        # Enabling sealed-secrets-controller
         enabled: True
+        # Enabling the WebGUI.
+        enable_webgui: True
         version: 1.16.1
-        namespace: 'shared-services'
+        namespace: 'kube-system'
   
   networking:
     # Default: calico
