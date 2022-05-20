@@ -112,3 +112,76 @@ spec:
 *https://argo-cd.readthedocs.io/en/stable/operator-manual/declarative-setup/#clusters*
 
 ![Capture](https://user-images.githubusercontent.com/102635491/167630255-f1d1bbb9-b6ab-4e80-a27f-f8d29f8aa2f1.PNG)
+
+## ***Various repository credentials templates.***
+
+```yaml
+# Repository credentials, for using the same credentials in multiple repositories.
+apiVersion: v1
+kind: Secret
+metadata:
+  name: argoproj-https-creds
+  namespace: argocd
+  labels:
+    argocd.argoproj.io/secret-type: repo-creds
+stringData:
+  url: https://github.com/argoproj
+  password: my-password
+  username: my-username
+```
+
+```yaml
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: argoproj-ssh-creds
+  namespace: argocd
+  labels:
+    argocd.argoproj.io/secret-type: repo-creds
+stringData:
+  url: git@github.com:argoproj-labs
+  sshPrivateKey: |
+    -----BEGIN OPENSSH PRIVATE KEY-----
+    ...
+    -----END OPENSSH PRIVATE KEY-----
+```
+
+```yaml
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: github-creds
+  namespace: argocd
+  labels:
+    argocd.argoproj.io/secret-type: repo-creds
+stringData:
+  url: https://github.com/argoproj
+  githubAppID: 1
+  githubAppInstallationID: 2
+  githubAppPrivateKey: |
+    -----BEGIN OPENSSH PRIVATE KEY-----
+    ...
+    -----END OPENSSH PRIVATE KEY-----
+```
+
+```yaml
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: github-enterprise-creds
+  namespace: argocd
+  labels:
+    argocd.argoproj.io/secret-type: repo-creds
+stringData:
+  url: https://github.com/argoproj
+  githubAppID: 1
+  githubAppInstallationID: 2
+  githubAppEnterpriseBaseUrl: https://ghe.example.com/api/v3
+  githubAppPrivateKey: |
+    -----BEGIN OPENSSH PRIVATE KEY-----
+    ...
+    -----END OPENSSH PRIVATE KEY-----
+```

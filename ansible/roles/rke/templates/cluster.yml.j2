@@ -35,9 +35,9 @@ nodes:
 
 services:
   etcd:
-    snapshot: {{ addons.etcd_snapshots|default(False) }}
-    creation: 12h
-    retention: 24h
+    snapshot: {{ addons.etcd_snapshots | default(False) }}
+    creation: {{ cluster.addons.etcd_snapshots.creation | default('12h') }}
+    retention: {{ cluster.addons.etcd_snapshots.retention | default('24h') }}
 
 ingress:
 {% if ingress.enable_default|default(True)|bool == False %}
