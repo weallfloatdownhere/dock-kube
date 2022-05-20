@@ -16,7 +16,6 @@ nodes:
       {{ lookup('file', '~/.ssh/id_rsa') | indent(width=6) }}
 {% if ('work' in node.hostname|lower or 
       'slave' in node.hostname|lower or
-      'node' in node.hostname|lower or
       'runner' in node.hostname|lower or
       'agent' in node.hostname|lower) and cluster.nodes|length > 3 %}
     role: [worker]

@@ -12,7 +12,20 @@
 
 ![Capture](https://user-images.githubusercontent.com/102635491/164043817-7143bfae-a8a8-47ed-9ac5-23f74c86c82d.PNG)
 
-***1. Install curl, git and make***
+***1. Update your system.***
+
+```bash
+# Ubuntu >= 18.04
+$ sudo apt -y update
+
+# Archlinux
+$ sudo pacman -Syyu
+
+# Centos >= 7
+$ sudo yum -y update
+```
+
+***2. Install curl, git and make***
 
 ```bash
 # Ubuntu >= 18.04
@@ -22,7 +35,7 @@ $ sudo apt -y install curl git make
 $ sudo pacman -S curl git make --needed --no-confirm
 ```
 
-[***2. Install Docker***](https://docs.docker.com/engine/install/)
+[***3. Install Docker***](https://docs.docker.com/engine/install/)
 
 ```bash
 # Ubuntu >= 18.04
@@ -32,7 +45,7 @@ $ sudo apt -y install docker.io
 $ sudo pacman -S docker --needed --no-confirm
 ```
 
-***3. Enable docker and containerd services***
+***4. Enable docker and containerd services***
 
 ```bash
 # Enabled the docker service.
@@ -98,25 +111,52 @@ $ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest remove
 
 # *<ins>Configuration file values.</ins>*
 
-| value                                 | description                          | default              | type   | required |
-| :------------------------------------ | :----------------------------------- | :------------------- | :----- | :------- |
-| cluster.domain                        | organization domain                  | local.local          | string | yes      |
-| cluster.environment                   | target cluster environment           | dev                  | string | yes      |
-| cluster.user                          | nodes sudo user                      | admin                | string | yes      |
-| cluster.password                      | nodes user's sudo password           | admin                | string | yes      |
-| cluster.nodes                         | list of nodes in the cluster         | []                   | list   | yes      |
-| cluster.nodes.address                 | node ip address                      | None                 | string | yes      |
-| cluster.nodes.hostname                | node hostname                        | cluster              | string | yes      |
-| cluster.addons                        | dictionary of addons                 | {}                   | dict   | no       |
-| cluster.addons.etcd_snapshots.enabled | enabling Etcd snapshots              | False                | bool   | no       |
-| cluster.addons.argocd.enabled         | enabling ArgoCD installation         | False                | bool   | no       |
-| cluster.addons.sealed_secrets.enabled | enabling Sealed secrets installation | False                | string | no       |
-| networking.enable_default             | use default network cni              | True                 | bool   | no       |
-| networking.custom_network_cni         | custom network cni name              | None                 | string | no       |
-| ingress.enable_default                | use default ingress controller       | True                 | bool   | no       |
-| ingress.custom_ingress_controller     | custom ingress controller name       | nginx                | string | no       |
-| docker_socket_path                    | docker daemon path                   | /var/run/docker.sock | string | no       |
-| workspace_directory                   | output files destination directory   | $HOME/rke            | string | no       |
+| value                                 | description                          | default              | type   | required                                                                                       |
+| :------------------------------------ | :----------------------------------- | :------------------- | :----- | :--------------------------------------------------------------------------------------------- |
+| cluster.domain                        | organization domain                  | local.local          | string | yes                                                                                            |
+| cluster.environment                   | target cluster environment           | dev                  | string | yes                                                                                            |
+| cluster.user                          | nodes sudo user                      | admin                | string | yes                                                                                            |
+| cluster.password                      | nodes user's sudo password           | admin                | string | yes                                                                                            |
+| cluster.nodes                         | list of nodes in the cluster         | []                   | list   | yes                                                                                            |
+| cluster.nodes.address                 | node ip address                      | None                 | string | yes                                                                                            |
+| cluster.nodes.hostname                | node hostname                        | cluster              | string | [see the nodes naming convention](#nodes-naming-convention-and-nodes-roles-detection-mechanic) |
+| cluster.addons                        | dictionary of addons                 | {}                   | dict   | no                                                                                             |
+| cluster.addons.etcd_snapshots.enabled | enabling Etcd snapshots              | False                | bool   | no                                                                                             |
+| cluster.addons.argocd.enabled         | enabling ArgoCD installation         | False                | bool   | no                                                                                             |
+| cluster.addons.sealed_secrets.enabled | enabling Sealed secrets installation | False                | string | no                                                                                             |
+| networking.enable_default             | use default network cni              | True                 | bool   | no                                                                                             |
+| networking.custom_network_cni         | custom network cni name              | None                 | string | no                                                                                             |
+| ingress.enable_default                | use default ingress controller       | True                 | bool   | no                                                                                             |
+| ingress.custom_ingress_controller     | custom ingress controller name       | nginx                | string | no                                                                                             |
+| docker_socket_path                    | docker daemon path                   | /var/run/docker.sock | string | no                                                                                             |
+| workspace_directory                   | output files destination directory   | $HOME/rke            | string | no                                                                                             |
+
+---
+
+# Nodes naming convention and nodes roles detection mechanic
+
+### ***You have probably noticed that you didnt assigned any roles to the nodes. This is because there is a roles detection mechanism inside the installer. The detection routine result is based on certains patterns in found in the value `cluster.nodes.hostname` of each nodes. Below is the conditions determining nodes roles attributions. <ins>Its also important to know that, if your `config.yml` file is only containing three(3) nodes or less, they automatically get `all possible roles attributed` to them.</ins>***
+
+</br>
+
+**if the cluster.nodes.hostname is containing either of these strings/patterns, its a `controleplane + etcd`**
+
+```bash
+master  # eg: rke-master-1
+control # eg: controller1
+ctrl    # eg: ctrlplane-2
+manage  # eg: node-manager-1
+admin   # eg: kube-admin-3
+```
+
+**if the cluster.nodes.hostname is containing either of these strings/patterns, its a `worker`**
+
+```bash
+work    # eg: rke-worker-2
+slave   # eg: kube-slave1
+runner  # eg: node-runner-1
+agent   # agent3
+```
 
 ---
 
@@ -215,7 +255,7 @@ $ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest remove
 
 ---
 
-# *<ins>Addons (Operators).</ins>*
+# *<ins>Addons / Operators.</ins>*
 
 - [**ArgoCD**](https://github.com/argoproj/argo-cd)
 
@@ -228,13 +268,3 @@ $ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest remove
 - [**Sealed-secrets operator**](https://github.com/bitnami-labs/sealed-secrets)
 
 ---
-
-# *<ins>Samples.</ins>*
-
-- [**Full configuration file example.**](docs/samples/configurations/config_full.yml)
-
-- [**Minimal single node configuration.**](docs/samples/configurations/config_minimal.yml)
-
-- [**Basic multiple nodes configuration.**](docs/samples/configurations/config_multiple_nodes.yml)
-
-- [**Basic single node configuration.**](docs/samples/configurations/config_single_node.yml)
