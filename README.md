@@ -8,7 +8,7 @@
 
 # *<ins>Requirements.</ins>*
 
-***Minimum requirements***
+## ***Minimum requirements***
 
 ![Capture](https://user-images.githubusercontent.com/102635491/164043817-7143bfae-a8a8-47ed-9ac5-23f74c86c82d.PNG)
 
@@ -69,7 +69,7 @@ $ docker pull silentreatmen7/dock-kube:latest
 
 # *<ins>Usage.</ins>*
 
-**Please note that this step is assuming that there is a valid `config.yml` file in the current directory.**
+**Please note that this step is assuming that there is a valid [config.yml](#minimal-configuration-file-example) file in the current directory.**
 
 ```bash
 $ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest [COMPONENT(S)] [TASK]
@@ -79,12 +79,12 @@ $ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest [COMPON
 
 # *<ins>Parameters.</ins>*
 
-| parameter      | description                                     | cmd  | default | type   | required | choices          | dependencies                          |
-| :------------- | :---------------------------------------------- | :--- | :------ | :----- | :------- | :--------------- | :------------------------------------ |
-| task           | Command execution mode                          |      | install | string | yes      | {install,remove} | {install,remove}                      |
-| rke            | Install Kubernetes on target nodes              | -c   |         | string |          |                  | `config.yml` in the current directory |
-| argocd         | Deploy ArgoCD into the cluster                  | -c   |         | string |          |                  | Kubernetes installed                  |
-| sealed-secrets | Deploy Sealed secrets operator into the cluster | -c   |         | string |          |                  | Kubernetes installed                  |
+| parameter      | description                                     | cmd  | default | type   | required | choices          | dependencies                                                                                               |
+| :------------- | :---------------------------------------------- | :--- | :------ | :----- | :------- | :--------------- | :--------------------------------------------------------------------------------------------------------- |
+| task           | Command execution mode                          |      | install | string | yes      | {install,remove} | [Minimum requirements](#minimum-requirements) and [A config.yml file](#minimal-configuration-file-example) |
+| rke            | Install Kubernetes on target nodes              | -c   |         | string |          |                  | [config.yml](#minimal-configuration-file-example) in the current directory                                                                      |
+| argocd         | Deploy ArgoCD into the cluster                  | -c   |         | string |          |                  | Kubernetes installed                                                                                       |
+| sealed-secrets | Deploy Sealed secrets operator into the cluster | -c   |         | string |          |                  | Kubernetes installed                                                                                       |
 
 
 ## *<ins>Examples.</ins>*
@@ -135,11 +135,11 @@ $ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest remove
 
 # Nodes naming convention and nodes roles detection mechanic
 
-### ***You have probably noticed that you didnt assigned any roles to the nodes. This is because there is a roles detection mechanism inside the installer. The detection routine result is based on certains patterns in found in the value `cluster.nodes.hostname` of each nodes. Below are the criterias that has to be met for a node to dynamically get roles attributed to it. <ins>Its also important to know that, if your `config.yml` file is only `containing three(3) nodes or less`, they automatically get `all possible roles attributed` to them.</ins>***
+### ***You have probably noticed that you didnt assigned any roles to the nodes. This is because there is a roles detection mechanism inside the installer. The detection routine result is based on certains patterns in found in the value `cluster.nodes.hostname` of each nodes. Below are the criterias that has to be met for a node to dynamically get roles attributed to it. <ins>Its also important to know that, if your [config.yml](#minimal-configuration-file-example) file is only `containing three(3) nodes or less`, they automatically get `all possible roles attributed` to them.</ins>***
 
 </br>
 
-**if the cluster.nodes.hostname is containing either of these strings/patterns, its a `controlplane + etcd`**
+**If the `cluster.nodes.hostname` is containing either of these strings/patterns, its a `controlplane + etcd`**
 
 ```bash
 master  # eg: rke-master-1
@@ -149,7 +149,7 @@ manage  # eg: node-manager-1
 admin   # eg: kube-admin-3
 ```
 
-**if the cluster.nodes.hostname is containing either of these strings/patterns, its a `worker`**
+**If the `cluster.nodes.hostname` is containing either of these strings/patterns, its a `worker`**
 
 ```bash
 work    # eg: rke-worker-2
@@ -160,7 +160,7 @@ agent   # agent3
 
 ---
 
-## *Minimal configuration file example.*
+## *Minimal configuration file example*
 
 <details>
 
@@ -187,7 +187,7 @@ agent   # agent3
 
 ---
 
-## *Full configuration file example.*
+## *Full configuration file example*
 
 <details>
 
