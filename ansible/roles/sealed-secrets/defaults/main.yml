@@ -1,3 +1,4 @@
+kubectl_bin_path: /usr/bin/kubectl
 workspace_directory: "{{ ansible_env.HOME | default('/root') }}/rke"
 
 sealed_secrets:

@@ -118,9 +118,13 @@ $ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest remove
 | docker_socket_path                    | docker daemon path                   | /var/run/docker.sock | string | no       |
 | workspace_directory                   | output files destination directory   | $HOME/rke            | string | no       |
 
+---
+
+## *Minimal configuration file example.*
+
 <details>
 
-<summary><font size=4>Minimal config.yml example.</font></summary>
+<summary><font size=3>config.yml</font></summary>
 
   ```yaml
  ---
@@ -141,9 +145,13 @@ $ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest remove
 
 </details>
 
+---
+
+## *Full configuration file example.*
+
 <details>
 
-<summary><font size=4>Full config.yml example.</font></summary>
+<summary><font size=3>config.yml</font></summary>
 
   ```yaml
   ---

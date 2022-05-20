@@ -32,7 +32,7 @@
     atomic: True
     name: argo
     chart_ref: argo/argo-cd
-    release_namespace: "{{ cluster.addons.argocd.namespace | default('argocd') }}"
+    release_namespace: "{{ cluster.addons.argocd.namespace }}"
     create_namespace: True
     kubeconfig: "{{ workspace_directory }}/kube_config_cluster.yml"
     values_files: 
