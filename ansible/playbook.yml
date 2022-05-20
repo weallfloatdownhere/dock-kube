@@ -32,10 +32,8 @@
   - name: "Set execution mode before we start."
     set_fact:
       exec_mode: |-
-        {% set mode = '' %}
-        {% if "rke" in triggers and "install" in triggers %}
         {% set mode = 'up' %}
-        {% elif "argocd" in triggers and "install" in triggers %}
+        {% if "install" in triggers %}
         {% set mode = 'up' %}
         {% elif "remove" in triggers %}
         {% set mode = 'remove' %}

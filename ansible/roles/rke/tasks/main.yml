@@ -1,15 +1,16 @@
-# output : stamped_file_found
-- name: "Stamping file."
-  include_tasks: stamping.yml
-  when: 'step == "nodes"'
-
 - name: "Host system setup."
   include_tasks: host.yml
   when: 'step == "host"'
 
+# output : needs_update = True|False
+- name: "Stamping file."
+  include_tasks: stamping.yml
+  when: 'step == "nodes"'
+
 - name: "Nodes system setup."
   include_tasks: nodes.yml
-  when: 'step == "nodes" and stamped_file_found == True'
+  when: (step == "nodes") and 
+        (needs_update == True)
 
 - name: "Uninstall Kubernetes."
   include_tasks: rke-remove.yml

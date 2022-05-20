@@ -33,5 +33,5 @@ docker_socket_path: /var/run/docker.sock
 workspace_directory: "{{ ansible_env.HOME | default('/root') }}/rke"
 
 stamped_file:
-  path: "{{ ansible_env.HOME }}/.devopsed.stamp"
-  older_than: 2d
+  path: "/opt"
+  older_than: 1d

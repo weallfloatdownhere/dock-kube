@@ -1,22 +1,21 @@
 - name: Check if the dummy files is older than the specified time.
   find:
-    paths: '{{ stamped_file.path | default("~/.devopsed.stamp") }}'
-    age: '{{stamped_file.older_than|default("1d")}}'
+    paths: '{{ stamped_file.path }}/'
+    patterns: '.devopsed.stamp'
+    age: '{{ stamped_file.older_than }}'
     file_type: file
     hidden: True
   register: reg_stamped_file_found
 
-- set_fact:
-    stamped_file_found: '{{ False if reg_stamped_file_found.files | default([]) | length > 0 else True }}'
-
-- debug:
-    msg: 
-      - "{{ reg_stamped_file_found }}"
-      - "{{ stamped_file_found }}"
-
-- name: Create the stamped file if it doesnt meets the criterias.
+- name: Create/Overwrite the stamped if a match is found in the previous step.
+  become: True
   copy:
-    content: ""
-    dest: '{{ stamped_file.path | default("~/.devopsed.stamp") }}'
-    force: no
-  when: stamped_file_found
+    content: "devopd"
+    dest: '{{ stamped_file.path }}/.devopsed.stamp'
+    force: "{{ 'yes' if reg_stamped_file_found.matched > 0 else 'no' }}"
+  register: reg_stamped_file_changed
+
+  # https://docs.ansible.com/ansible/latest/user_guide/playbooks_filters.html#defining-different-values-for-true-false-null-ternary
+- name: Export the stamped file 'changed' status
+  set_fact:
+    needs_update: "{{ reg_stamped_file_changed.changed | ternary(True, False, True) }}"
