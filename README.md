@@ -135,11 +135,15 @@ $ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest remove
 
 # Nodes naming convention and nodes roles detection mechanic
 
-### ***You have probably noticed that you didnt assigned any roles to the nodes. This is because there is a roles detection mechanism inside the installer. The detection routine result is based on certains patterns in found in the value `cluster.nodes.hostname` of each nodes. Below are the criterias that has to be met for a node to dynamically get roles attributed to it. <ins>Its also important to know that, if your [config.yml](#minimal-configuration-file-example) file is only `containing three(3) nodes or less`, they automatically get `all possible roles attributed` to them.</ins>***
+***You have probably noticed that you didnt assigned any roles to the nodes. This is because the installer is containing a *dynamic roles detection mechanism*. The detection routine result is based on certains patterns found in the value `cluster.nodes.hostname` of each nodes.***
+
+***Below are the criterias that has to be met for a node to dynamically get roles attributed to it.*** 
+
+***<ins>Its also important to note that, if your [config.yml](#minimal-configuration-file-example) file is only `containing three(3) nodes or less`, they automatically get `all possible roles attributed` to them.</ins>***
 
 </br>
 
-**If the `cluster.nodes.hostname` is containing either of these strings/patterns, its a `controlplane + etcd`**
+**If the `cluster.nodes.hostname` is containing either of these strings/patterns, its a `controlplane + etcd`.**
 
 ```bash
 master  # eg: rke-master-1
@@ -149,7 +153,7 @@ manage  # eg: node-manager-1
 admin   # eg: kube-admin-3
 ```
 
-**If the `cluster.nodes.hostname` is containing either of these strings/patterns, its a `worker`**
+**If the `cluster.nodes.hostname` is containing either of these strings/patterns, its a `worker`.**
 
 ```bash
 work    # eg: rke-worker-2

@@ -13,28 +13,31 @@
     path: "{{ workspace_directory }}/values.yaml"
   register: argocd_custom_values
 
-- name: Set values to use in the deployment.
-  set_fact:
-    value_file: |-
-      {% set out = "{{role_path}}/files/default-values.yml" %}
-      {% if argocd_custom_values.stat.exists == True %}
-      {% set out = "{{workspace_directory}}/values.yml" %}
-      {% endif %}
-      {{ out }}
-
 - name: Add ArgoCD helm repository.
   kubernetes.core.helm_repository:
     name: argo
-    repo_url: "{{ argocd_helm_charts_url }}"
+    repo_url: "{{ cluster.addons.argocd.helm_charts_url }}"
 
 - name: "Deploy ArgoCD."
   kubernetes.core.helm:
     atomic: True
     name: argo
+    wait: True
     chart_ref: argo/argo-cd
     release_namespace: "{{ cluster.addons.argocd.namespace }}"
     create_namespace: True
     kubeconfig: "{{ workspace_directory }}/kube_config_cluster.yml"
-    values_files: 
-      - '{{ value_file | trim }}'
+    values:
+      namespace: "{{ cluster.addons.argocd.namespace }}"
+      dex:
+        enabled: false
+
+      server:
+        extraArgs:
+          - --insecure
+
+      configs:
+        secret:
+          createSecret: true
+          argocdServerAdminPassword: "{{ cluster.addons.argocd.installation.admin_default_password }}"
       

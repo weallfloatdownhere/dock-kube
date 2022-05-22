@@ -1,21 +1,16 @@
 - name: "Host system setup."
   include_tasks: host.yml
-  when: 'step == "host"'
+  when: (step == "host")
 
 # output : needs_update = True|False
 - name: "Stamping file."
   include_tasks: stamping.yml
-  when: 'step == "nodes"'
+  when: (step == "nodes")
 
 - name: "Nodes system setup."
   include_tasks: nodes.yml
-  when: (step == "nodes") and 
-        (needs_update == True)
+  when: (step == "nodes")
 
-- name: "Uninstall Kubernetes."
-  include_tasks: rke-remove.yml
-  when: 'step == "rke-remove"'
-
-- name: "Install Kubernetes."
-  include_tasks: rke-up.yml
-  when: 'step == "rke-up"'
+- name: "Install / Uninstall Kubernetes."
+  include_tasks: rke.yml
+  when: (step == "rke")

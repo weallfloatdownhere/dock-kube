@@ -1,17 +1,23 @@
+- name: "Stamping file before the run begin."
+  include_tasks: stamping.yml
+
 - name: Update system
   become: True
   shell: |
     sudo apt-get -y update
     sudo apt-get -y upgrade
-  register: docker_install
+  register: update_run_status
+  when: (needs_update == True)
 
 - name: Update apt cache
   become: True
   apt: update_cache=yes cache_valid_time=3600
+  when: (needs_update == True)
 
 - name: Upgrade all apt packages
   become: True
   apt: upgrade=dist
+  when: (needs_update == True)
 
 - name: Install dependencies
   become: True
@@ -31,7 +37,7 @@
     - nfs-common
     - python3
     - git
-  register: docker_install
+  when: (needs_update == True)
 
 - name: Add RKE admin user
   become: True
@@ -94,12 +100,14 @@
     - xt_set
     - xt_statistic
     - xt_tcpudp
+  when: (needs_update == True)
 
 - name: Add Docker GPG apt Key
   become: True
   apt_key:
     url: https://download.docker.com/linux/ubuntu/gpg
     state: present
+  when: (needs_update == True)
 
 - name: Add Docker Repository
   become: True
@@ -198,6 +206,9 @@
     - {key: net.bridge.bridge-nf-call-ip6tables, value: 1}
     - {key: net.bridge.bridge-nf-call-iptables,  value: 1}
     - {key: net.ipv4.ip_forward,  value: 1}
+
+- name: "Stamping file at the end of the run."
+  include_tasks: stamping.yml
 
 - name: "[REBOOT] - Check if /var/run/reboot-required exists"
   stat:

@@ -5,10 +5,26 @@
     mode: u=rw,g=r,o=
   register: rke_cluster_config
 
-- name: Run RKE installer
-  shell: rke up | tee {{ workspace_directory }}/rke-up.log
+- name: Run rke binary
+  shell: |
+    {% if mode_exec == 'install' %}
+    {{ rke_up_cmd }} {{ verbose_cmd if verbose_exec }}
+    {% elif mode_exec == 'remove' %}
+    {{ rke_remove_cmd }} {{ verbose_cmd if verbose_exec }}
+    {% endif %}
+  vars:
+    verbose_cmd: "| tee {{ workspace_directory }}/rke.log"
+    rke_up_cmd: "rke up"
+    rke_remove_cmd: "rke remove --force"
   args:
     chdir: "{{ workspace_directory }}/"
+
+- name: "If the verbose mode is not enabled, delete the generated cluster.yml file after the run."
+  file:
+    path: "{{ workspace_directory }}/cluster.yml"
+    state: absent
+    force: True
+  when: not verbose_exec
 
 - name: Ensure the resulting kube_config_cluster.yml is present.
   stat:

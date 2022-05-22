@@ -1,11 +1,1 @@
-kubectl_bin_path: /usr/bin/kubectl
-argocd_helm_charts_url: https://argoproj.github.io/argo-helm
-
-cluster:
-  addons:
-    argocd:
-      enabled: True
-      version: 4.5.12
-      namespace: 'argocd'
-
 workspace_directory: "{{ ansible_env.HOME | default('/root') }}/rke"

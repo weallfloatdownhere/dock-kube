@@ -1,6 +1,11 @@
 - hosts: localhost
   gather_facts: True
   tasks:
+  - name: "Set global facts from provided triggers list."
+    set_fact:
+      mode_exec: '{{ "remove" if "remove" in triggers else "install" }}'
+      verbose_exec: "{{ True if 'verbose' in triggers else False }}"
+
   - name: "Generate hosts list from the provided config.yml file."
     add_host:
       hostname: '{{item.address|trim|ansible.netcommon.ipaddr}}'
@@ -29,31 +34,17 @@
 - hosts: localhost
   gather_facts: True
   tasks:
-  - name: "Set execution mode before we start."
-    set_fact:
-      exec_mode: |-
-        {% set mode = 'up' %}
-        {% if "install" in triggers %}
-        {% set mode = 'up' %}
-        {% elif "remove" in triggers %}
-        {% set mode = 'remove' %}
-        {% endif %}
-        {{ mode }}
-
   - name: "Run Kubernetes RKE binary in the specified mode."
     include_role: 
       name: rke
     vars:
-      step: "rke-{{exec_mode}}"
-    when: exec_mode != ''
+      step: "rke"
 
-  - name: "Deploy Sealed Secrets operator."
+  - name: "Deploy Sealed Secrets."
     include_role: 
       name: sealed-secrets
-    vars:
-      step: deploy
     when: ("install" in triggers) and
-          ("argocd" in triggers) or 
+          ("argocd" in triggers) or
           ("op-sealed-secrets" in triggers)
 
   - name: "Deploy ArgoCD."
@@ -61,6 +52,6 @@
       name: argocd
     vars:
       step: deploy
-    when: ("install" in triggers|default([])) and
-          ("argocd" in triggers|default([])) 
+    when: ("install" in triggers) and
+          ("argocd" in triggers) 
           
