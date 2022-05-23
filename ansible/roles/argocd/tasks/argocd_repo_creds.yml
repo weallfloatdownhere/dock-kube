@@ -12,7 +12,7 @@
       repo_username: "{{ repo_credential.repo_username | default('undefined') }}"
       repo_password: "{{ repo_credential.repo_password | default('undefined') }}"
       repo_ssh_key: "{{ repo_credential.repo_ssh_key | default('undefined') }}"
-  with_items: "{{ applications.repositories_creds | default([]) }}"
+  with_items: "{{ repositories_creds | default([]) }}"
   loop_control:
     loop_var: repo_credential
-    notify: export repocreds manifests
+  notify: export repocreds manifests

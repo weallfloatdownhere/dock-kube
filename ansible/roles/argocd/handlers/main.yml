@@ -10,8 +10,16 @@
       repo_username: "{{ repo_credential.repo_username | default('undefined') }}"
       repo_password: "{{ repo_credential.repo_password | default('undefined') }}"
       repo_ssh_key: "{{ repo_credential.repo_ssh_key | default('undefined') }}"
-  with_items: "{{ applications.repositories_creds | default([]) }}"
+  with_items: "{{ repositories_creds | default([]) }}"
   loop_control:
     loop_var: repo_credential
   when: (verbose_exec | default(False) | bool)
   listen: export repocreds manifests
+
+- name: "Export the ArgoCD cluster manifest (if verbose)."
+  template:
+    src: templates/argocd.cluster.yml.j2
+    dest: "{{ workspace_directory }}/logs/argocd.cluster.yml"
+    force: True
+  when: (verbose_exec | default(False) | bool)
+  listen: export cluster manifests

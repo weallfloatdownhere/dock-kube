@@ -1,13 +1,7 @@
-- name: "Export the ArgoCD cluster manifest (if verbose)."
-  template:
-    src: templates/argocd.cluster.yml.j2
-    dest: "{{ workspace_directory }}/logs/argocd.cluster.yml"
-    force: True
-  when: (verbose_exec | default(False) | bool)
-
 - name: "Ensure the ArgoCD cluster is created."
   kubernetes.core.k8s:
     state: present
     namespace: "{{ cluster.addons.argocd.namespace | default(argocd_default_namespace) }}"
     definition: "{{ lookup('template', 'templates/argocd.cluster.yml.j2') | from_yaml }}"
     kubeconfig: "{{ workspace_directory }}/kube_config_cluster.yml"
+  notify: export cluster manifests

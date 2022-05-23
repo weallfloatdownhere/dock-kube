@@ -48,5 +48,5 @@
 - name: "Generate ArgoCD repository credentials."
   include_tasks: argocd_repo_creds.yml
   when: (cluster.addons.argocd.enabled | default(False) | bool) and
-        (applications.repositories_creds | default([]) | length) > 0 and
+        (repositories_creds | default([]) | length) > 0 and
         (step == "repocreds")
