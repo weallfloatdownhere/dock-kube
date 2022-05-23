@@ -17,6 +17,7 @@
 - name: "Create repositories https credentials."
   kubernetes.core.k8s:
     state: present
+    namespace: "{{ cluster.addons.argocd.namespace | default(argocd_default_namespace) }}"
     definition: "{{ lookup('template', 'templates/repository.credential.yml.j2') | from_yaml }}"
     kubeconfig: "{{ workspace_directory }}/kube_config_cluster.yml"
   vars:

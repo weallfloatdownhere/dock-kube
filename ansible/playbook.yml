@@ -65,4 +65,12 @@
       step: cluster
     when: ("install" in triggers) and
           ("argocd" in triggers)
+
+  - name: "Generate ArgoCD repositories credentials specified in the config (in any)."
+    include_role: 
+      name: argocd
+    vars:
+      step: repocreds
+    when: ("install" in triggers) and
+          ("argocd" in triggers)
           
