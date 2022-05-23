@@ -248,7 +248,8 @@ agent   # agent3
         repo_username: user@organization.com
         repo_password: user_password
   
-      - repo_name: https://bitbucket.org/organization
+      - name: organization_cred
+        repo_url: https://bitbucket.org/organization
         repo_ssh_key: |
           -----BEGIN OPENSSH PRIVATE KEY-----
           ...
