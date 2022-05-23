@@ -1,6 +1,5 @@
 argocd_helm_charts_url: https://argoproj.github.io/argo-helm
 argocd_default_namespace: argocd
 argocd_default_admin_password: admin
-# argocd_default_admin_password: "$2y$10$DulDL6kv6ABYwcz4SBxtiOevBjw7rdUgW6wBbmE3/RP6EvaAMBcde"
 argocd_default_ingress_enabled: False
 argocd_default_insecure_state: True

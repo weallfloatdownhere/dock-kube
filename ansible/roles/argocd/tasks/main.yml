@@ -20,7 +20,18 @@
     encrypted_argocd_config: "{{ lookup('template', 'templates/argocd.cluster.config.json.j2') | b64encode }}"
     encrypted_argocd_name: "{{ argocd_cluster_name | b64encode }}"
     encrypted_argocd_server: "{{ argocd_cluster_url | b64encode }}"
-    
+
+- name: "Print generated values (if verbose)."
+  debug:
+    msg:
+      - "{{ argocd_cluster_url | default('ERROR') }}"
+      - "{{ argocd_cluster_name | default('ERROR') }}"
+      - "{{ encrypted_admin_password | default('ERROR') }}"
+      - "{{ encrypted_argocd_config | default('ERROR') }}"
+      - "{{ encrypted_argocd_name | default('ERROR') }}"
+      - "{{ encrypted_argocd_server | default('ERROR') }}"
+  when: (verbose_exec | default(False) | bool)
+
 # step: deploy
 - name: "Deploy ArgoCD if conditions are met."
   include_tasks: argocd_server.yml

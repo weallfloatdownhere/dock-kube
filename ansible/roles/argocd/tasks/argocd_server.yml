@@ -12,39 +12,4 @@
     release_namespace: "{{ cluster.addons.argocd.namespace | default(argocd_default_namespace) }}"
     create_namespace: True
     kubeconfig: "{{ workspace_directory }}/kube_config_cluster.yml"
-    values:
-      redis-ha:
-        enabled: "{{ True if (cluster.nodes | default([]) | length >= 3) else False }}"
-
-      controller:
-        enableStatefulSet: true
-
-      repoServer:
-        serviceAccount:
-          create: true
-
-      dex:
-        enabled: false
-
-      server:
-        extraArgs: "{{ ['--insecure'] if (cluster.addons.argocd.insecure | default(argocd_default_insecure_state)) else [] }}"
-
-      configs:
-        secret:
-          createSecret: true
-          argocdServerAdminPassword: "{{ encrypted_admin_password }}"
-
-      ingress:
-          enabled: "{{ cluster.addons.argocd.enable_ingress | default(argocd_default_ingress_enabled) }}"
-          annotations: {}
-          labels: {}
-          ingressClassName: ""
-          hosts: []
-          paths:
-            - /
-          pathType: Prefix
-          extraPaths: []
-          https: "{{ False if (cluster.addons.argocd.insecure | default(argocd_default_insecure_state)) else True }}"
-          tls: []
-          
-      
+    release_values: "{{ lookup('template', 'templates/argocd.installation.yml.j2') | from_yaml }}"
