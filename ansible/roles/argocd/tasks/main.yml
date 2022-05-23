@@ -1,12 +1,41 @@
+- name: Ensure the logs directory exists.
+  file:
+    path: "{{ workspace_directory }}/logs"
+    state: directory
+  when: (verbose_exec | default(False) | bool)
+
+- name: "Encrypt the admin password."
+  encrypt_string:
+    clear_string: "{{ cluster.addons.argocd.admin_password | default(argocd_default_admin_password) }}"
+  register: reg_encrypted_admin_password
+
+- name: "Set ArgoCD variables."
+  set_fact:
+    argocd_cluster_url: "https://argocd-{{cluster.environment}}.{{cluster.domain}}"
+    argocd_cluster_name: "argocd-{{cluster.environment}}.{{cluster.domain}}"
+    encrypted_admin_password: "{{ reg_encrypted_admin_password.stdout | trim }}"
+
+- name: "Generate cluster encrypted values."
+  set_fact:
+    encrypted_argocd_config: "{{ lookup('template', 'templates/argocd.cluster.config.json.j2') | b64encode }}"
+    encrypted_argocd_name: "{{ argocd_cluster_name | b64encode }}"
+    encrypted_argocd_server: "{{ argocd_cluster_url | b64encode }}"
+    
 # step: deploy
 - name: "Deploy ArgoCD if conditions are met."
   include_tasks: argocd_server.yml
   when: (cluster.addons.argocd.enabled | default(False) | bool) and
         (step == "deploy")
 
+# step: cluster
+- name: "Deploy an ArgoCD cluster."
+  include_tasks: argocd_cluster.yml
+  when: (cluster.addons.argocd.enabled | default(False) | bool) and
+        (step == "cluster")  
+
 # step: repocreds
 - name: "Generate ArgoCD repository credentials."
   include_tasks: argocd_repo_creds.yml
   when: (cluster.addons.argocd.enabled | default(False) | bool) and
-        (argocd.repo_credentials_templates | default([]) | length) > 0 and
+        (applications.repositories_creds | default([]) | length) > 0 and
         (step == "repocreds")

@@ -5,6 +5,9 @@
     set_fact:
       mode_exec: '{{ "remove" if "remove" in triggers else "install" }}'
       verbose_exec: "{{ True if 'verbose' in triggers else False }}"
+      workspace_directory: "{{ ansible_env.HOME | default('/root') }}/rke"
+#     argocd_cluster_url: "https://argocd-{{cluster.environment}}.{{cluster.domain}}"
+#     argocd_cluster_name: "argocd-{{cluster.environment}}.{{cluster.domain}}"
 
   - name: "Generate hosts list from the provided config.yml file."
     add_host:
@@ -53,5 +56,13 @@
     vars:
       step: deploy
     when: ("install" in triggers) and
-          ("argocd" in triggers) 
+          ("argocd" in triggers)
+
+  - name: "Create the ArgoCD cluster."
+    include_role: 
+      name: argocd
+    vars:
+      step: cluster
+    when: ("install" in triggers) and
+          ("argocd" in triggers)
           

@@ -1,22 +1,7 @@
-- name: Confirm that the kubeconfig file is exists
-  stat:
-    path: "{{ workspace_directory }}/kube_config_cluster.yml"
-  register: kubeconfig_exists
-
-- name: Fail if the kubeconfig doesnt exists since its a dependency.
-  fail:
-    msg: "Cant find the kubeconfig file."
-  when: not kubeconfig_exists.stat.exists
-
-- name: Check if a values files is provided for argocd.
-  stat:
-    path: "{{ workspace_directory }}/values.yaml"
-  register: argocd_custom_values
-
 - name: Add ArgoCD helm repository.
   kubernetes.core.helm_repository:
     name: argo
-    repo_url: "{{ cluster.addons.argocd.helm_charts_url }}"
+    repo_url: "{{ argocd_helm_charts_url }}"
 
 - name: "Deploy ArgoCD."
   kubernetes.core.helm:
@@ -24,20 +9,42 @@
     name: argo
     wait: True
     chart_ref: argo/argo-cd
-    release_namespace: "{{ cluster.addons.argocd.namespace }}"
+    release_namespace: "{{ cluster.addons.argocd.namespace | default(argocd_default_namespace) }}"
     create_namespace: True
     kubeconfig: "{{ workspace_directory }}/kube_config_cluster.yml"
     values:
-      namespace: "{{ cluster.addons.argocd.namespace }}"
+      redis-ha:
+        enabled: "{{ True if (cluster.nodes | default([]) | length >= 3) else False }}"
+
+      controller:
+        enableStatefulSet: true
+
+      repoServer:
+        serviceAccount:
+          create: true
+
       dex:
         enabled: false
 
       server:
-        extraArgs:
-          - --insecure
+        extraArgs: "{{ ['--insecure'] if (cluster.addons.argocd.insecure | default(argocd_default_insecure_state)) else [] }}"
 
       configs:
         secret:
           createSecret: true
-          argocdServerAdminPassword: "{{ cluster.addons.argocd.installation.admin_default_password }}"
+          argocdServerAdminPassword: "{{ encrypted_admin_password }}"
+
+      ingress:
+          enabled: "{{ cluster.addons.argocd.enable_ingress | default(argocd_default_ingress_enabled) }}"
+          annotations: {}
+          labels: {}
+          ingressClassName: ""
+          hosts: []
+          paths:
+            - /
+          pathType: Prefix
+          extraPaths: []
+          https: "{{ False if (cluster.addons.argocd.insecure | default(argocd_default_insecure_state)) else True }}"
+          tls: []
+          
       

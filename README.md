@@ -263,6 +263,8 @@ agent   # agent3
 
 - [**ArgoCD**](https://github.com/argoproj/argo-cd)
 
+  [***Helm Charts***](https://github.com/argoproj/argo-helm/tree/master/charts/argo-cd)
+
   ***Configuration***
 
   *In order to overwrite the default values, create a file name `argocd-values.yaml` in your workspace directory.*

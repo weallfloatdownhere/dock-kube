@@ -1,6 +1,6 @@
 FROM python:3.8-slim as baseline
 RUN apt -y update
-RUN apt -y install git curl python3-dev gcc openssl openssh-client sshpass
+RUN apt -y install git curl python3-dev gcc openssl openssh-client sshpass apache2-utils
 
 RUN apt -y upgrade
 RUN python3 -m pip install --upgrade pip

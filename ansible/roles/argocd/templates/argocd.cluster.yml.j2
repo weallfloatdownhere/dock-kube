@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: cluster-secret
+  labels:
+    argocd.argoproj.io/secret-type: cluster
+  annotations:
+    managed-by: argocd.argoproj.io
+data:
+  config: {{ encrypted_argocd_config }}
+  name: {{ encrypted_argocd_name }}
+  server: {{ encrypted_argocd_server }}

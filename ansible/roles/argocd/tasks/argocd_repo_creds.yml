@@ -1,16 +1,30 @@
-apiVersion: v1
-kind: Secret
-metadata:
-  name: github-ssh-creds
-  namespace: shared-services
-  labels:
-    argocd.argoproj.io/secret-type: repository
-stringData:
-  url: git@github.com:roman-hds/argo-demo.git
-  sshPrivateKey: |
-    -----BEGIN OPENSSH PRIVATE KEY-----
-    .
-    .
-    .
-    .
-    -----END OPENSSH PRIVATE KEY-----  
+- name: "Export credentials manifests in the logs directory (if verbose)."
+  template:
+    src: templates/repository.credential.yml.j2
+    dest: "{{ workspace_directory }}/logs/repo.creds-{{ repo_credential.name }}.yml"
+    force: True
+  vars:
+    creds:
+      repo_name: "{{ repo_credential.repo_name | default('undefined') }}"
+      repo_username: "{{ repo_credential.repo_username | default('undefined') }}"
+      repo_password: "{{ repo_credential.repo_password | default('undefined') }}"
+      repo_ssh_key: "{{ repo_credential.repo_ssh_key | default('undefined') }}"
+  with_items: "{{ applications.repositories_creds | default([]) }}"
+  loop_control:
+    loop_var: repo_credential
+  when: (verbose_exec | default(False) | bool)
+
+- name: "Create repositories https credentials."
+  kubernetes.core.k8s:
+    state: present
+    definition: "{{ lookup('template', 'templates/repository.credential.yml.j2') | from_yaml }}"
+    kubeconfig: "{{ workspace_directory }}/kube_config_cluster.yml"
+  vars:
+    creds:
+      repo_name: "{{ repo_credential.repo_name | default('undefined') }}"
+      repo_username: "{{ repo_credential.repo_username | default('undefined') }}"
+      repo_password: "{{ repo_credential.repo_password | default('undefined') }}"
+      repo_ssh_key: "{{ repo_credential.repo_ssh_key | default('undefined') }}"
+  with_items: "{{ applications.repositories_creds | default([]) }}"
+  loop_control:
+    loop_var: repo_credential

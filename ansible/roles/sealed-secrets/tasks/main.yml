@@ -2,18 +2,14 @@
   include_tasks: sealed_secrets.yml
   when: (cluster.addons.sealed_secrets.enabled | default(False) | bool)
 
-- name: "Short break before deploying the WebGUI."
-  pause:
-    seconds: 2
-  when: (cluster.addons.sealed_secrets.enabled | default(False) | bool)
-
 - name: "Fetch the Sealed secrets controller public key"
   include_tasks: sealed_secrets_fetch_keys.yml
   vars:
     step: public
   when: (cluster.addons.sealed_secrets.enabled | default(False) | bool)
 
-- name: "Deploy Sealed secrets WebGUI into the cluster."
-  include_tasks: sealed_secrets_webgui.yml
-  when: (cluster.addons.sealed_secrets.enabled | default(False) | bool) and
-        (cluster.addons.sealed_secrets.webui.enabled | default(False) | bool)
+- name: "Fetch the Sealed secrets controller public key"
+  include_tasks: sealed_secrets_fetch_keys.yml
+  vars:
+    step: private
+  when: (cluster.addons.sealed_secrets.enabled | default(False) | bool)
