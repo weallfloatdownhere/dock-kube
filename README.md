@@ -212,47 +212,47 @@ agent   # agent3
     # List of nodes to include in the cluster.
     nodes:
       - address: 10.0.0.175
-        hostname: node1
-      - address: 10.0.0.176
-        hostname: node1
-      - address: 10.0.0.177
-        hostname: node3
+        hostname: cluster
+        docker_socket_path: '/var/run/docker.sock'
+  
+    ingress:
+      enabled: True
+      controller: nginx
+      network_mode: hostPort
   
     # List of addons to deploy / configure.
     addons:
       # RKE cluster snapshots service.
       etcd_snapshots:
-        enabled: True
-  
+        enabled: False
       # ArgoCD Gitops engine deployment.
       argocd:
         enabled: True
-        version: 4.5.12
-        namespace: 'argocd'
-  
+        namespace: argocd
+        admin_password: admin
+        enable_ingress: True
+        insecure: True
       # Sealed secrets operator.
       sealed_secrets:
-        # Enabling sealed-secrets-controller
         enabled: True
-        # Enabling the WebGUI.
-        enable_webgui: True
-        version: 1.16.1
-        namespace: 'kube-system'
+        namespace: kube-system
+      # Enabling the WebGUI.
+      sealed_secrets_webgui:
+        enabled: False
   
-  networking:
-    # Default: calico
-    enable_default: True
-    # The custom network cni to use in case   enable_default is False
-    custom_network_cni: cilium
+  applications:
+    install_apps: True
+    repositories_creds:
+      - name: organization_cred
+        repo_url: https://bitbucket.org/organization
+        repo_username: user@organization.com
+        repo_password: user_password
   
-  ingress:
-    # Default: nginx
-    enable_default: True
-    # The custom ingress controller to use in case   enable_default is False
-    custom_ingress_controller: nginx
-  
-  # Could be /var/run/docker.sock too.
-  docker_socket_path: /var/run/docker.sock
+      - repo_name: https://bitbucket.org/organization
+        repo_ssh_key: |
+          -----BEGIN OPENSSH PRIVATE KEY-----
+          ...
+          -----END OPENSSH PRIVATE KEY-----
   ```
 
 </details>
