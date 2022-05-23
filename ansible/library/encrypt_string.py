@@ -12,14 +12,14 @@ module: encrypt_string
 short_description: Plaintext to encrypted string.
 version_added: "1.0"
 description:
-    - "Update target user password."
+    - "Encrypt plaintext string with ht"
 dependencies:
     - htpasswd: https://httpd.apache.org/docs/2.4/programs/htpasswd.html
     - kubectl: https://github.com/kubernetes/kubectl
 options:
     clear_string:
         description:
-            - Plaintext string to encrypt
+            - Plaintext string to encrypt with htpasswd.
         required: true
         type: str
 author:
@@ -29,7 +29,8 @@ author:
 EXAMPLES = '''
 - name: "Encrypt specified string."
   encrypt_string:
-    clear_string: admin
+    clear_string: supersecretpassword
+  register: reg_encrypted_string
 '''
 
 RETURN = '''
