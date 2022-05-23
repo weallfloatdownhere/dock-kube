@@ -1,3 +1,9 @@
+- name: Ensure the logs directory exists.
+  file:
+    path: "{{ workspace_directory }}/logs"
+    state: directory
+  when: (verbose_exec | default(False) | bool)
+
 - name: Create/update RKE config file
   template:
     src: "templates/cluster.yml.j2"
@@ -13,7 +19,7 @@
     {{ rke_remove_cmd }} {{ verbose_cmd if verbose_exec }}
     {% endif %}
   vars:
-    verbose_cmd: "| tee {{ workspace_directory }}/rke.log"
+    verbose_cmd: "| tee {{ workspace_directory }}/logs/rke.log"
     rke_up_cmd: "rke up"
     rke_remove_cmd: "rke remove --force"
   args:
@@ -26,13 +32,8 @@
     force: True
   when: not verbose_exec
 
-- name: Ensure the resulting kube_config_cluster.yml is present.
-  stat:
-    path: "{{ workspace_directory }}/kube_config_cluster.yml"
-  register: kube_config_present
-
 - name: Ensure the resulting kube_config_cluster.yml has the rights permissions.
   file:
     path: "{{ workspace_directory }}/kube_config_cluster.yml"
     mode: '0666'
-  when: kube_config_present.stat.exists
+  when: (mode_exec == "install")
