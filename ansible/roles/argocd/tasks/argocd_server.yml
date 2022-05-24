@@ -13,3 +13,4 @@
     create_namespace: True
     kubeconfig: "{{ workspace_directory }}/kube_config_cluster.yml"
     release_values: "{{ lookup('template', 'templates/argocd.installation.yml.j2') | from_yaml }}"
+  no_log: True

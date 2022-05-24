@@ -15,4 +15,5 @@
   with_items: "{{ repositories_creds | default([]) }}"
   loop_control:
     loop_var: repo_credential
+  no_log: True
   notify: export repocreds manifests
