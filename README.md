@@ -82,7 +82,7 @@ $ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest [COMPON
 | parameter      | description                                     | cmd  | default | type   | required | choices          | dependencies                                                                                               |
 | :------------- | :---------------------------------------------- | :--- | :------ | :----- | :------- | :--------------- | :--------------------------------------------------------------------------------------------------------- |
 | task           | Command execution mode                          |      | install | string | yes      | {install,remove} | [Minimum requirements](#minimum-requirements) and [A config.yml file](#minimal-configuration-file-example) |
-| rke            | Install Kubernetes on target nodes              | -c   |         | string |          |                  | [config.yml](#minimal-configuration-file-example) in the current directory                                                                      |
+| rke            | Install Kubernetes on target nodes              | -c   |         | string |          |                  | [config.yml](#minimal-configuration-file-example) in the current directory                                 |
 | argocd         | Deploy ArgoCD into the cluster                  | -c   |         | string |          |                  | Kubernetes installed                                                                                       |
 | sealed-secrets | Deploy Sealed secrets operator into the cluster | -c   |         | string |          |                  | Kubernetes installed                                                                                       |
 
@@ -124,8 +124,6 @@ $ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest remove
 | cluster.addons.etcd_snapshots.enabled | enabling Etcd snapshots              | False                | bool   | no                                                                                             |
 | cluster.addons.argocd.enabled         | enabling ArgoCD installation         | False                | bool   | no                                                                                             |
 | cluster.addons.sealed_secrets.enabled | enabling Sealed secrets installation | False                | string | no                                                                                             |
-| networking.enable_default             | use default network cni              | True                 | bool   | no                                                                                             |
-| networking.custom_network_cni         | custom network cni name              | None                 | string | no                                                                                             |
 | ingress.enable_default                | use default ingress controller       | True                 | bool   | no                                                                                             |
 | ingress.custom_ingress_controller     | custom ingress controller name       | nginx                | string | no                                                                                             |
 | docker_socket_path                    | docker daemon path                   | /var/run/docker.sock | string | no                                                                                             |

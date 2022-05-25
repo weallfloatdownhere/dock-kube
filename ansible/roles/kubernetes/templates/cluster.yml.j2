@@ -4,7 +4,7 @@ cluster_name: rancher-{{ cluster.environment }}
 
 addon_job_timeout: 600
 ignore_docker_version: false
-docker_socket: {{docker_socket_path}}
+docker_socket: {{ docker_socket_path | default(nodes_docker_socket_path) }}
 
 nodes:
 {% if cluster.nodes|default([])|length > 0 %}
@@ -49,9 +49,4 @@ ingress:
   provider: {{ingress.custom_ingress_controller}}
 {% else %}
   provider: nginx
-{% endif -%}
-  
-{% if networking.enable_default|default(True) == False %}
-network:
-    plugin: {{custom_network_cni}}
 {% endif -%}

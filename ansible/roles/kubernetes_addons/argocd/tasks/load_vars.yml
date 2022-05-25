@@ -1,6 +1,7 @@
 - name: "Encrypt the admin password."
   encrypt_string:
     clear_string: "{{ cluster.addons.argocd.admin_password | default(argocd_default_admin_password) }}"
+    encryption: "bcrypt"
   register: reg_encrypted_admin_password
   notify: export encrypted values
 

@@ -72,8 +72,7 @@ class string_encrypter:
         return executeProcess(command, result, module)
 
     def encrypt_base64(self, result=None, module=None):
-        return base64.b64encode(f"{module.params['clear_string']}")
-
+        return base64.b64encode(bytes(module.params['clear_string'], 'UTF-8'))
 
     def __init__(self):
         module_args = dict(

@@ -1,0 +1,6 @@
+- name: "Loading variables."
+  include_tasks: load_vars.yml
+
+- name: "Ensure host requirements are met."
+  include_tasks: host_setup.yml
+  when: (step_tracker == "preflight")

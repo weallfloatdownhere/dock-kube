@@ -1,0 +1,12 @@
+# step: deploy argocd
+- name: "Install ArgoCD base."
+  include_tasks: argocd_server.yml
+
+# step: generate and apply argocd cluster manifest.
+- name: "Deploy and ArgoCD cluster."
+  include_tasks: argocd_cluster.yml
+
+# step: generate and apply argocd repositories credentials.
+- name: "Generate ArgoCD repository credentials."
+  include_tasks: argocd_repo_creds.yml
+          

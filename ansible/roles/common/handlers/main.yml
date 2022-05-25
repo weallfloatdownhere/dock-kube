@@ -18,7 +18,7 @@
 
 - name: "Export the ArgoCD cluster manifest (if verbose)."
   template:
-    src: templates/argocd.cluster.yml.j2
+    src: "{{playbook_dir}}/roles/kubernetes_addons/argocd/templates/argocd.cluster.yml.j2"
     dest: "{{ workspace_directory }}/logs/argocd.cluster.yml"
     force: True
   when: (verbose_exec | default(False) | bool)
@@ -26,7 +26,7 @@
 
 - name: "Print the generated encrypted cluster manifests."
   debug:
-    msg: "{{ lookup('template', 'templates/argocd.cluster.yml.j2') | from_yaml }}"
+    msg: "{{ lookup('template', playbook_dir + '/roles/kubernetes_addons/argocd/templates/argocd.cluster.yml.j2') | from_yaml }}"
   when: (verbose_exec | default(False) | bool)
   listen: export cluster manifests
 

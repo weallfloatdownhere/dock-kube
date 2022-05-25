@@ -1,74 +1,33 @@
 - hosts: localhost
   gather_facts: True
   tasks:
-  - name: "Set global facts from provided triggers list."
-    set_fact:
-      mode_exec: '{{ "remove" if "remove" in triggers else "install" }}'
-      verbose_exec: "{{ True if 'verbose' in triggers else False }}"
-      workspace_directory: "{{ ansible_env.HOME | default('/root') }}/rke"
-
-  - name: "Generate hosts list from the provided config.yml file."
-    add_host:
-      hostname: '{{item.address|trim|ansible.netcommon.ipaddr}}'
-      ansible_connection: ssh
-      ansible_user: "{{cluster.user|trim}}"
-      ansible_ssh_pass: "{{cluster.password|trim}}"
-      ansible_become_pass: "{{cluster.password|trim}}"
-      groups: lst_nodes
-    with_items: "{{cluster.nodes|default([])}}"
-
-  - name: Run host prerequisites
-    include_role: 
-      name: rke
-    vars:
-      step: host
+  # Preflight
+  - set_fact: {step_tracker: 'preflight'}
+  - include_role: {name: kubernetes}
 
 - hosts: lst_nodes
   gather_facts: True
   tasks:
-  - name: "Install prerequisites on all nodes."
-    include_role: 
-      name: rke
-    vars:
-      step: nodes
+  # Nodes dependencies.
+  - set_fact: {step_tracker: 'nodesprereq'}
+  - include_role: {name: kubernetes}
 
 - hosts: localhost
   gather_facts: True
   tasks:
-  - name: "Run Kubernetes RKE binary in the specified mode."
-    include_role: 
-      name: rke
-    vars:
-      step: "rke"
+  # Kubernetes installation
+  - set_fact: {step_tracker: 'kubernetes'}
+  - include_role: {name: kubernetes}
 
-  - name: "Deploy Sealed Secrets."
-    include_role: 
-      name: sealed-secrets
-    when: ("install" in triggers) and
-          ("argocd" in triggers) or
-          ("op-sealed-secrets" in triggers)
+  # Kubernetes addons deployments.
+    # Sealed Secrets
+  - set_fact: {step_tracker: 'kubernetes_addons_sealed_secrets'}
+  - include_role: {name: kubernetes_addons/argocd}
+    when: (cluster.addons.sealed_secrets.enabled | default(False) | bool) and
+          (mode_exec == 'install')
 
-  - name: "Deploy ArgoCD."
-    include_role: 
-      name: argocd
-    vars:
-      step: deploy
-    when: ("install" in triggers) and
-          ("argocd" in triggers)
-
-  - name: "Create the ArgoCD cluster."
-    include_role: 
-      name: argocd
-    vars:
-      step: cluster
-    when: ("install" in triggers) and
-          ("argocd" in triggers)
-
-  - name: "Generate ArgoCD repositories credentials specified in the config (in any)."
-    include_role: 
-      name: argocd
-    vars:
-      step: repocreds
-    when: ("install" in triggers) and
-          ("argocd" in triggers)
-          
+    # ArgoCD
+  - set_fact: {step_tracker: 'kubernetes_addons_argocd'}
+  - include_role: {name: kubernetes_addons/argocd}    
+    when: (cluster.addons.argocd.enabled | default(True) | bool) and
+          (mode_exec == 'install')

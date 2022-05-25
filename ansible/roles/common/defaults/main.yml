@@ -1,0 +1,10 @@
+nodes_docker_socket_path: /var/run/docker.sock
+
+argocd_helm_charts_url: https://argoproj.github.io/argo-helm
+argocd_default_namespace: argocd
+argocd_default_admin_password: admin
+argocd_default_ingress_enabled: False
+argocd_default_insecure_state: True
+
+sealed_secrets_helm_charts_url: https://bitnami-labs.github.io/sealed-secrets
+sealed_secrets_default_namespace: kube-system
