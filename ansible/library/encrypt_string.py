@@ -22,6 +22,13 @@ options:
             - Plaintext string to encrypt with htpasswd.
         required: true
         type: str
+    encryption:
+        description:
+            - Type of encryption.
+        required: false
+        default: base64
+        choices: ['base64', 'bcrypt']
+        type: str
 author:
     - Anonymous
 '''
@@ -31,6 +38,12 @@ EXAMPLES = '''
   encrypt_string:
     clear_string: supersecretpassword
   register: reg_encrypted_string
+
+- name: "Encrypt specified string."
+  encrypt_string:
+    clear_string: supersecretpassword
+    encryption: base64
+  register: reg_encrypted_string
 '''
 
 RETURN = '''
@@ -39,9 +52,11 @@ stdout:
     type: str
 '''
 
-import os, subprocess
+from re import M
+import subprocess
+import base64
 from ansible.module_utils.basic import AnsibleModule
-from pathlib import Path
+from collections import OrderedDict
 
 def executeProcess(cmd="", result=None, module=None):
     try:
@@ -52,13 +67,18 @@ def executeProcess(cmd="", result=None, module=None):
         module.exit_json(**result)
 
 class string_encrypter:
-    def encrypt_string(self, result=None, module=None):
+    def encrypt_bcrypt(self, result=None, module=None):
         command = f"htpasswd -bnBC 10 \"\" {module.params['clear_string']} | tr -d ':\n'"
         return executeProcess(command, result, module)
 
+    def encrypt_base64(self, result=None, module=None):
+        return base64.b64encode(f"{module.params['clear_string']}")
+
+
     def __init__(self):
         module_args = dict(
-            clear_string=dict(type='str', required=True)
+            clear_string=dict(type='str', required=True),
+            encryption=dict(type='str', required=False, choices=['base64', 'bcrypt'])
         )
 
         result = dict(
@@ -70,8 +90,13 @@ class string_encrypter:
             supports_check_mode=True
         )
 
+        tasks = OrderedDict([
+            ('bcrypt', self.encrypt_bcrypt(result, module)),
+            ('base64', self.encrypt_base64(result, module))
+        ])
+
         try:
-            result['stdout'] = self.encrypt_string(result, module)
+            result['stdout'] = tasks[module.params['encryption']]
             module.exit_json(**result)
         except Exception as err:
             result['stdout'] = err

@@ -4,5 +4,4 @@
     namespace: "{{ cluster.addons.argocd.namespace | default(argocd_default_namespace) }}"
     definition: "{{ lookup('template', 'templates/argocd.cluster.yml.j2') | from_yaml }}"
     kubeconfig: "{{ workspace_directory }}/kube_config_cluster.yml"
-  no_log: True
   notify: export cluster manifests

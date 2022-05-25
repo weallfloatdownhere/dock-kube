@@ -23,3 +23,21 @@
     force: True
   when: (verbose_exec | default(False) | bool)
   listen: export cluster manifests
+
+- name: "Print the generated encrypted cluster manifests."
+  debug:
+    msg: "{{ lookup('template', 'templates/argocd.cluster.yml.j2') | from_yaml }}"
+  when: (verbose_exec | default(False) | bool)
+  listen: export cluster manifests
+
+- name: "Print generated values (if verbose)."
+  debug:
+    msg:
+      - "{{ argocd_cluster_url | default('ERROR') }}"
+      - "{{ argocd_cluster_name | default('ERROR') }}"
+      - "{{ encrypted_admin_password | default('ERROR') }}"
+      - "{{ encrypted_argocd_config | default('ERROR') }}"
+      - "{{ encrypted_argocd_name | default('ERROR') }}"
+      - "{{ encrypted_argocd_server | default('ERROR') }}"
+  when: (verbose_exec | default(False) | bool)
+  listen: export encrypted values

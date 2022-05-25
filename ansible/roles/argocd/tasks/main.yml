@@ -4,33 +4,10 @@
     state: directory
   when: (verbose_exec | default(False) | bool)
 
-- name: "Encrypt the admin password."
-  encrypt_string:
-    clear_string: "{{ cluster.addons.argocd.admin_password | default(argocd_default_admin_password) }}"
-  register: reg_encrypted_admin_password
-
-- name: "Set ArgoCD variables."
-  set_fact:
-    argocd_cluster_url: "https://argocd-{{cluster.environment}}.{{cluster.domain}}"
-    argocd_cluster_name: "argocd-{{cluster.environment}}.{{cluster.domain}}"
-    encrypted_admin_password: "{{ reg_encrypted_admin_password.stdout | trim }}"
-
-- name: "Generate cluster encrypted values."
-  set_fact:
-    encrypted_argocd_config: "{{ lookup('template', 'templates/argocd.cluster.config.json.j2') | b64encode }}"
-    encrypted_argocd_name: "{{ argocd_cluster_name | b64encode }}"
-    encrypted_argocd_server: "{{ argocd_cluster_url | b64encode }}"
-
-- name: "Print generated values (if verbose)."
-  debug:
-    msg:
-      - "{{ argocd_cluster_url | default('ERROR') }}"
-      - "{{ argocd_cluster_name | default('ERROR') }}"
-      - "{{ encrypted_admin_password | default('ERROR') }}"
-      - "{{ encrypted_argocd_config | default('ERROR') }}"
-      - "{{ encrypted_argocd_name | default('ERROR') }}"
-      - "{{ encrypted_argocd_server | default('ERROR') }}"
-  when: (verbose_exec | default(False) | bool)
+# loading encrypted variables.
+- name: "Loading encrypted vars."
+  include_tasks: load_vars.yml
+  when: (cluster.addons.argocd.enabled | default(False) | bool)
 
 # step: deploy
 - name: "Deploy ArgoCD if conditions are met."
@@ -39,7 +16,7 @@
         (step == "deploy")
 
 # step: cluster
-- name: "Deploy an ArgoCD cluster."
+- name: "Deploy and ArgoCD cluster."
   include_tasks: argocd_cluster.yml
   when: (cluster.addons.argocd.enabled | default(False) | bool) and
         (step == "cluster")  
