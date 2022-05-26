@@ -107,7 +107,6 @@
   apt_key:
     url: https://download.docker.com/linux/ubuntu/gpg
     state: present
-  when: (needs_update == True)
 
 - name: Add Docker Repository
   become: True
