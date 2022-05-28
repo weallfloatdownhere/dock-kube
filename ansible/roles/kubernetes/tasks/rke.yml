@@ -1,0 +1,39 @@
+- name: Ensure the logs directory exists.
+  file:
+    path: "{{ workspace_directory }}/logs"
+    state: directory
+  when: (verbose_exec | default(False) | bool)
+
+- name: Create/update RKE config file
+  template:
+    src: "templates/cluster.yml.j2"
+    dest: "{{ workspace_directory }}/cluster.yml"
+    mode: u=rw,g=r,o=
+  register: rke_cluster_config
+
+- name: Run rke binary
+  shell: |
+    {% if mode_exec == 'install' %}
+    {{ rke_up_cmd }} {{ verbose_cmd if verbose_exec }}
+    {% elif mode_exec == 'remove' %}
+    {{ rke_remove_cmd }} {{ verbose_cmd if verbose_exec }}
+    {% endif %}
+  vars:
+    verbose_cmd: "| tee {{ workspace_directory }}/logs/rke.log"
+    rke_up_cmd: "rke up"
+    rke_remove_cmd: "rke remove --force"
+  args:
+    chdir: "{{ workspace_directory }}/"
+
+- name: "If the verbose mode is not enabled, delete the generated cluster.yml file after the run."
+  file:
+    path: "{{ workspace_directory }}/cluster.yml"
+    state: absent
+    force: True
+  when: not verbose_exec
+
+- name: Ensure the resulting kube_config_cluster.yml has the rights permissions.
+  file:
+    path: "{{ workspace_directory }}/kube_config_cluster.yml"
+    mode: '0666'
+  when: (mode_exec == "install")

@@ -1,0 +1,15 @@
+- name: Add ArgoCD helm repository.
+  kubernetes.core.helm_repository:
+    name: argo
+    repo_url: "{{ argocd_helm_charts_url }}"
+
+- name: "Deploy ArgoCD."
+  kubernetes.core.helm:
+    atomic: True
+    name: argo
+    wait: True
+    chart_ref: argo/argo-cd
+    release_namespace: "{{ cluster.addons.argocd.namespace | default(argocd_default_namespace) }}"
+    create_namespace: True
+    kubeconfig: "{{ workspace_directory }}/kube_config_cluster.yml"
+    release_values: "{{ lookup('template', 'templates/argocd.installation.yml.j2') | from_yaml }}"

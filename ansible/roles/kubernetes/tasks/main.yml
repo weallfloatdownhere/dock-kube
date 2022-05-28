@@ -1,0 +1,16 @@
+- name: "Host system setup."
+  include_tasks: host.yml
+  when: (step_tracker == "preflight")
+
+# output : needs_update = True|False
+- name: "Stamping file."
+  include_tasks: stamping.yml
+  when: (step_tracker == "nodesprereq")
+
+- name: "Nodes system setup."
+  include_tasks: nodes.yml
+  when: (step_tracker == "nodesprereq")
+
+- name: "Install / Uninstall Kubernetes."
+  include_tasks: rke.yml
+  when: (step_tracker == "kubernetes")

@@ -1,6 +1,6 @@
 FROM python:3.8-slim as baseline
 RUN apt -y update
-RUN apt -y install git curl python3-dev gcc openssl openssh-client sshpass
+RUN apt -y install git curl python3-dev gcc openssl openssh-client sshpass apache2-utils
 
 RUN apt -y upgrade
 RUN python3 -m pip install --upgrade pip
@@ -22,7 +22,6 @@ RUN pip3 install --no-cache-dir --no-cache PyYAML==6.0
 RUN pip3 install --no-cache-dir --no-cache kubernetes==21.7.0
 RUN pip3 install --no-cache-dir --no-cache dnspython3==1.15.0
 RUN pip3 install --no-cache-dir --no-cache jsonpatch==1.32
-RUN pip3 install --no-cache-dir --no-cache click==8.1.3
 
 RUN ansible-galaxy collection install ansible.netcommon
 RUN ansible-galaxy collection install ansible.utils

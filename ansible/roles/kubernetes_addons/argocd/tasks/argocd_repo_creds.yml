@@ -1,0 +1,18 @@
+- name: "Create repositories https credentials."
+  kubernetes.core.k8s:
+    state: present
+    namespace: "{{ cluster.addons.argocd.namespace | default(argocd_default_namespace) }}"
+    definition: "{{ lookup('template', 'templates/repository.credential.yml.j2') | from_yaml }}"
+    kubeconfig: "{{ workspace_directory }}/kube_config_cluster.yml"
+  vars:
+    creds:
+      name: "{{ repo_credential.name | default('undefined') }}"
+      repo_url: |-
+        {{ repo_credential.repo_url | default('undefined') }}
+      repo_username: "{{ repo_credential.repo_username | default('undefined') }}"
+      repo_password: "{{ repo_credential.repo_password | default('undefined') }}"
+      repo_ssh_key: "{{ repo_credential.repo_ssh_key | default('undefined') }}"
+  with_items: "{{ repositories_creds | default([]) }}"
+  loop_control:
+    loop_var: repo_credential
+  notify: export repocreds manifests

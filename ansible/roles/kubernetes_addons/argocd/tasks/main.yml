@@ -1,0 +1,13 @@
+- name: Ensure the logs directory exists.
+  file:
+    path: "{{ workspace_directory }}/logs"
+    state: directory
+  when: (verbose_exec | default(False) | bool)
+
+# loading encrypted variables.
+- name: "Loading and Encryption (if needed) ArgoCD installation required variables."
+  include_tasks: load_vars.yml
+
+# ArgoCD install full.
+- name: "ArgoCD Installation [FULL]."
+  include_tasks: argocd_full_installation.yml

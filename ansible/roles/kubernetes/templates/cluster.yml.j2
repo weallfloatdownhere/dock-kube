@@ -1,0 +1,52 @@
+---
+
+cluster_name: rancher-{{ cluster.environment }}
+
+addon_job_timeout: 600
+ignore_docker_version: false
+docker_socket: {{ docker_socket_path | default(nodes_docker_socket_path) }}
+
+nodes:
+{% if cluster.nodes|default([])|length > 0 %}
+{% for node in cluster.nodes %}
+  - address: {{ node.address|trim|ansible.utils.ipaddr }}
+    hostname_override: {{ node.hostname|trim }}
+    user: rke
+    ssh_key: |-
+      {{ lookup('file', '~/.ssh/id_rsa') | indent(width=6) }}
+{% if ('work' in node.hostname|lower or 
+      'slave' in node.hostname|lower or
+      'runner' in node.hostname|lower or
+      'agent' in node.hostname|lower) and cluster.nodes|length > 3 %}
+    role: [worker]
+{% elif ('master' in node.hostname|lower or
+        'control' in node.hostname|lower or
+        'ctrl' in node.hostname|lower or
+        'manage' in node.hostname|lower or
+        'admin' in node.hostname|lower or
+        'plane' in node.hostname|lower) and cluster.nodes|length > 3 %}
+    role: [controlplane, etcd]
+{% else %}
+    role: [controlplane, etcd, worker]
+{% endif %}
+{% endfor %}
+{% endif %}
+
+services:
+  etcd:
+    snapshot: {{ addons.etcd_snapshots | default(False) }}
+    creation: {{ cluster.addons.etcd_snapshots.creation | default('12h') }}
+    retention: {{ cluster.addons.etcd_snapshots.retention | default('24h') }}
+
+ingress:
+{% if ingress.enable_default|default(True)|bool == False %}
+  network_mode: none
+{% else %}
+  network_mode: hostPort
+{% endif -%}
+
+{% if ingress.enable_default|default(True)|bool == False %}
+  provider: {{ingress.custom_ingress_controller}}
+{% else %}
+  provider: nginx
+{% endif -%}

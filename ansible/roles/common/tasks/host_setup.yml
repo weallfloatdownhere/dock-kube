@@ -1,0 +1,33 @@
+# Check if the output / input ssh_keys directory already exists in the workspace.
+- name: Check if the ssh_keys directory already exists in the workspace.
+  stat:
+    path: "{{ workspace_directory }}/ssh_keys"
+  register: ssh_keys_dir_exists
+
+# Check if there are ssh keys set already provided in the the output / input ssh_keys workspace directory.
+- name: Check if ssh keys already exists in [workspace]/ssh_keys
+  stat:
+    path: "{{ workspace_directory }}/ssh_keys/id_rsa"
+  register: ssh_keys_exists
+
+# Make the ssh_keys output directory in the workspace.
+- name: "Mkdir the ssh_keys directory in the workspace."
+  file:
+    path: "{{ workspace_directory }}/ssh_keys"
+    state: directory
+  when: (ssh_keys_dir_exists.stat.exists == False)
+
+# Link the docker image ssh directory and the worksapce ssh_keys directory. symlink worskpace/ssh_keys -> ~/.ssh
+- name: "Import the provided ssh keys currently inside the workspace directory if exists."
+  file:
+    src: "{{ workspace_directory }}/ssh_keys"
+    dest: "{{ '~/.ssh' | expanduser }}"
+    state: link
+    force: True
+
+# Newly generated keys
+- name: "Generate an OpenSSH keypair with the default values (2048 bits, rsa)"
+  community.crypto.openssh_keypair:
+    path: "{{ '~/.ssh/id_rsa' | expanduser }}"
+    size: 2048
+  when: (ssh_keys_exists.stat.exists == False)

@@ -1,0 +1,2 @@
+sealed_secrets_helm_charts_url: https://bitnami-labs.github.io/sealed-secrets
+sealed_secrets_default_namespace: kube-system
