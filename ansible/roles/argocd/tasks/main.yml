@@ -11,7 +11,7 @@
 # step: generate and apply argocd cluster manifest.
 - name: "Deploy ArgoCD cluster."
   include_tasks: argocd_cluster.yml
-  when: (cluster.addons.argocd.cluster.create| default(false) | bool) == true
+  when: (cluster.addons.argocd.cluster.local| default(true) | bool) == false
 
 # step: generate and apply argocd repositories credentials.
 - name: "Generate ArgoCD repository credentials."
