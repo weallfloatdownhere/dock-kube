@@ -8,7 +8,7 @@
   environment: 
     KUBECONFIG: "{{ workspace_directory }}/kube_config_cluster.yml"
     GIT_TOKEN: "{{ cluster.addons.argocd.bootstrap.git_token }}"
-    GIT_REPO: "{{ cluster.addons.argocd.bootstrap.git_repo }}?ref={{ cluster.addons.argocd.bootstrap.git_repo_branch }}"
+    GIT_REPO: "{{ cluster.addons.argocd.bootstrap.git_repo }}?ref={{ cluster.addons.argocd.bootstrap.git_repo_branch | default('main') }}"
     GIT_USER: "{{ cluster.addons.argocd.bootstrap.git_user | default(omit) }}"
 
 - name: "Set ArgoCD custom admin password."
