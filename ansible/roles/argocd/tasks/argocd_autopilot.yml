@@ -3,6 +3,7 @@
     /bin/argocd-autopilot repo bootstrap \
     --upsert-branch {{ cluster.addons.argocd.bootstrap.git_repo_branch | default('main') }} \
     --installation-mode flat \
+    --context {{ kubernetes_cluster_name }} \
     --hide-password {{ '--insecure' if (cluster.addons.argocd.secure | default(false)) else '' }}
   environment: 
     KUBECONFIG: "{{ workspace_directory }}/kube_config_cluster.yml"

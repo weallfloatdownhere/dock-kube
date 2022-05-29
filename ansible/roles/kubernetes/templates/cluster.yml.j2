@@ -1,6 +1,6 @@
 ---
 
-cluster_name: {{ cluster.name | default(default_cluster_name) }}
+cluster_name: {{ kubernetes_cluster_name }}
 
 addon_job_timeout: 600
 ignore_docker_version: false

@@ -2,7 +2,7 @@
   set_fact:
     # Kubernetes default values
     default_docker_socket_path: /var/run/docker.sock
-    default_cluster_name: 'cluster-rkeqa'
+    kubernetes_default_cluster_name: 'cluster-rkeqa'
 
 - name: "Set default values (ArgoCD)."
   set_fact:
