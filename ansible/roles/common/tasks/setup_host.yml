@@ -1,3 +1,10 @@
+# Create a log directory if the verbose mode is activated.
+- name: Ensure the logs directory exists.
+  file:
+    path: "{{ workspace_directory }}/logs"
+    state: directory
+  when: (verbose_exec | default(False) | bool)
+
 # Check if the output / input ssh_keys directory already exists in the workspace.
 - name: Check if the ssh_keys directory already exists in the workspace.
   stat:

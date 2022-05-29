@@ -10,7 +10,7 @@
       repo_username: "{{ repo_credential.repo_username | default('undefined') }}"
       repo_password: "{{ repo_credential.repo_password | default('undefined') }}"
       repo_ssh_key: "{{ repo_credential.repo_ssh_key | default('undefined') }}"
-  with_items: "{{ repositories_creds | default([]) }}"
+  with_items: "{{ cluster.addons.argocd.repositories_creds | default([]) }}"
   loop_control:
     loop_var: repo_credential
   when: (verbose_exec | default(False) | bool)
@@ -33,11 +33,12 @@
 - name: "Print generated values (if verbose)."
   debug:
     msg:
-      - "{{ argocd_cluster_url | default('ERROR') }}"
+      - "{{ argocd_cluster_server | default('ERROR') }}"
       - "{{ argocd_cluster_name | default('ERROR') }}"
-      - "{{ encrypted_admin_password | default('ERROR') }}"
-      - "{{ encrypted_argocd_config | default('ERROR') }}"
-      - "{{ encrypted_argocd_name | default('ERROR') }}"
-      - "{{ encrypted_argocd_server | default('ERROR') }}"
+      - "{{ argocd_admin_password | default('ERROR') }}"
+      - "{{ argocd_encrypted_admin_password | default('ERROR') }}"
+      - "{{ argocd_encrypted_cluster_config | default('ERROR') }}"
+      - "{{ argocd_encrypted_cluster_name | default('ERROR') }}"
+      - "{{ argocd_encrypted_cluster_server | default('ERROR') }}"
   when: (verbose_exec | default(False) | bool)
   listen: export encrypted values

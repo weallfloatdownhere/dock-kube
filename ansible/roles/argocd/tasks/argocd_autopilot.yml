@@ -1,0 +1,25 @@
+- name: "Deploy ArgoCD."
+  shell: |
+    /bin/argocd-autopilot repo bootstrap \
+    --upsert-branch {{ cluster.addons.argocd.bootstrap.git_repo_branch | default('main') }} \
+    --installation-mode flat \
+    --hide-password {{ '--insecure' if (cluster.addons.argocd.secure | default(false)) else '' }}
+  environment: 
+    KUBECONFIG: "{{ workspace_directory }}/kube_config_cluster.yml"
+    GIT_TOKEN: "{{ cluster.addons.argocd.bootstrap.git_token }}"
+    GIT_REPO: "{{ cluster.addons.argocd.bootstrap.git_repo }}"
+    GIT_USER: "{{ cluster.addons.argocd.bootstrap.git_user | default(omit) }}"
+
+- name: "Set ArgoCD custom admin password."
+  shell: |
+    /bin/kubectl -n {{ argocd_namespace }} patch secret argocd-secret -p \
+      '{
+        "stringData": {
+          "admin.password": "{{ argocd_encrypted_admin_password }}",
+          "admin.passwordMtime": "'$(date +%FT%T%Z)'"
+        }
+      }'
+  environment: 
+    KUBECONFIG: "{{ workspace_directory }}/kube_config_cluster.yml"
+    GIT_TOKEN: "{{ cluster.addons.argocd.bootstrap.git_token }}"
+    GIT_REPO: "{{ cluster.addons.argocd.bootstrap.git_repo }}"

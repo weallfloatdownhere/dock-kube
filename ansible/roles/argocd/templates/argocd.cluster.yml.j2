@@ -8,6 +8,6 @@ metadata:
   annotations:
     managed-by: argocd.argoproj.io
 data:
-  config: {{ encrypted_argocd_config }}
-  name: {{ encrypted_argocd_name }}
-  server: {{ encrypted_argocd_server }}
+  config: {{ argocd_encrypted_cluster_config }}
+  name: {{ argocd_encrypted_cluster_name }}
+  server: {{ argocd_encrypted_cluster_server }}

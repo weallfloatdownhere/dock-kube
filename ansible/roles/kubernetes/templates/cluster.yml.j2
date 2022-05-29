@@ -1,10 +1,10 @@
 ---
 
-cluster_name: rancher-{{ cluster.environment }}
+cluster_name: {{ cluster.name | default(default_cluster_name) }}
 
 addon_job_timeout: 600
 ignore_docker_version: false
-docker_socket: {{ docker_socket_path | default(nodes_docker_socket_path) }}
+docker_socket: {{ docker_socket_path | default(default_docker_socket_path) }}
 
 nodes:
 {% if cluster.nodes|default([])|length > 0 %}
@@ -15,22 +15,23 @@ nodes:
     ssh_key: |-
       {{ lookup('file', '~/.ssh/id_rsa') | indent(width=6) }}
 {% if ('work' in node.hostname|lower or 
-      'slave' in node.hostname|lower or
-      'runner' in node.hostname|lower or
-      'agent' in node.hostname|lower) and cluster.nodes|length > 3 %}
+       'slave' in node.hostname|lower or
+       'runner' in node.hostname|lower or
+       'node' in node.hostname|lower or
+       'agent' in node.hostname|lower) and cluster.nodes|length > 3 %}
     role: [worker]
 {% elif ('master' in node.hostname|lower or
-        'control' in node.hostname|lower or
-        'ctrl' in node.hostname|lower or
-        'manage' in node.hostname|lower or
-        'admin' in node.hostname|lower or
-        'plane' in node.hostname|lower) and cluster.nodes|length > 3 %}
+         'control' in node.hostname|lower or
+         'ctrl' in node.hostname|lower or
+         'manage' in node.hostname|lower or
+         'admin' in node.hostname|lower or
+         'plane' in node.hostname|lower) and cluster.nodes|length > 3 %}
     role: [controlplane, etcd]
 {% else %}
     role: [controlplane, etcd, worker]
 {% endif %}
 {% endfor %}
-{% endif %}
+{% endif -%}
 
 services:
   etcd:
@@ -38,15 +39,17 @@ services:
     creation: {{ cluster.addons.etcd_snapshots.creation | default('12h') }}
     retention: {{ cluster.addons.etcd_snapshots.retention | default('24h') }}
 
+{% if cluster.ingress.enabled %}
 ingress:
-{% if ingress.enable_default|default(True)|bool == False %}
-  network_mode: none
+{% if cluster.ingress.controller %}
+  provider: {{ cluster.ingress.controller }}
 {% else %}
-  network_mode: hostPort
+  provider: none
 {% endif -%}
 
-{% if ingress.enable_default|default(True)|bool == False %}
-  provider: {{ingress.custom_ingress_controller}}
+{% if cluster.ingress.network_mode %}
+  network_mode: {{ cluster.ingress.network_mode }}
 {% else %}
-  provider: nginx
+  network_mode: none
+{% endif -%}
 {% endif -%}

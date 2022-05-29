@@ -1,0 +1,56 @@
+cluster:
+  name: 'cluster-qa'
+  environment: 'qa'
+  domain: organization.com
+  user: 'sudo-user'
+  password: 'sudo-user-password'
+  nodes:
+    - address: 10.14.31.70
+      hostname: rkeqa-master-0
+    - address: 10.14.31.71
+      hostname: rkeqa-master-1
+    - address: 10.14.31.72
+      hostname: rkeqa-master-2
+    - address: 10.14.31.75
+      hostname: rkeqa-worker-0
+    - address: 10.14.31.76
+      hostname: rkeqa-worker-1
+    - address: 10.14.31.77
+      hostname: rkeqa-worker-2
+
+  ingress:
+    enabled: false
+    controller: nginx
+    network_mode: hostPort
+
+  addons:
+    etcd_snapshots:
+      enabled: false
+      creation: '12h'
+      retention: '24h'
+    argocd:
+      enabled: false
+      host:
+      namespace: argocd
+      admin_password: admin
+      ingress: false
+      insecure: false
+
+repositories_creds:
+    # Secret name
+  - name: repocred-bitbucket-example
+    # Repositories base url.
+    repo_url: https://bitbucket.org/organizationinc
+    # Login username.
+    repo_username: username
+    # AppAuth Token
+    repo_password: password
+
+    # Secret name
+  - name: repocred-azure-example
+    # Repositories base url.
+    repo_url: https://organization@dev.azure.com/organization/
+    # Login username.
+    repo_username: 0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0aa0a0
+    # AppAuth Token
+    repo_password: 0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0aa0a0

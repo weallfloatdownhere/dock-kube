@@ -1,33 +1,24 @@
 - hosts: localhost
   gather_facts: True
   tasks:
-  # Preflight
-  - set_fact: {step_tracker: 'preflight'}
-  - include_role: {name: kubernetes}
+  - set_fact: { step_tracker: 'preflight' }
+  - include_role: { name: kubernetes }
 
 - hosts: lst_nodes
   gather_facts: True
   tasks:
-  # Nodes dependencies.
-  - set_fact: {step_tracker: 'nodesprereq'}
-  - include_role: {name: kubernetes}
+  - set_fact: { step_tracker: 'nodesprereq' }
+  - include_role: { name: kubernetes }
 
 - hosts: localhost
   gather_facts: True
   tasks:
-  # Kubernetes installation
-  - set_fact: {step_tracker: 'kubernetes'}
-  - include_role: {name: kubernetes}
+  - set_fact: { step_tracker: 'kubernetes' }
+  - include_role: { name: kubernetes }
 
-  # Kubernetes addons deployments.
-    # Sealed Secrets
-  - set_fact: {step_tracker: 'kubernetes_addons_sealed_secrets'}
-  - include_role: {name: kubernetes_addons/argocd}
-    when: (cluster.addons.sealed_secrets.enabled | default(False) | bool) and
-          (mode_exec == 'install')
-
-    # ArgoCD
-  - set_fact: {step_tracker: 'kubernetes_addons_argocd'}
-  - include_role: {name: kubernetes_addons/argocd}    
-    when: (cluster.addons.argocd.enabled | default(True) | bool) and
-          (mode_exec == 'install')
+  - set_fact: { step_tracker: 'argocd' }
+  - include_role: { name: argocd }    
+    when: (mode_exec == 'install') and
+          (cluster.addons.argocd != 'undefined')
+    
+  

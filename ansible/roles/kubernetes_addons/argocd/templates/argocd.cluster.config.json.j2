@@ -1,7 +1,0 @@
-{
-  "username": "admin",
-  "password": "{{ encrypted_admin_password }}",
-  "tlsClientConfig": {
-    "insecure": {{ cluster.addons.argocd.insecure | default(true) }}
-  }
-}

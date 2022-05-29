@@ -36,13 +36,8 @@ author:
 EXAMPLES = '''
 - name: "Encrypt specified string."
   encrypt_string:
-    clear_string: supersecretpassword
-  register: reg_encrypted_string
-
-- name: "Encrypt specified string."
-  encrypt_string:
-    clear_string: supersecretpassword
-    encryption: base64
+    clear_string: 'supersecretpassword'
+    encryption: 'base64'
   register: reg_encrypted_string
 '''
 
@@ -52,9 +47,7 @@ stdout:
     type: str
 '''
 
-from re import M
 import subprocess
-import base64
 from ansible.module_utils.basic import AnsibleModule
 from collections import OrderedDict
 
@@ -72,7 +65,8 @@ class string_encrypter:
         return executeProcess(command, result, module)
 
     def encrypt_base64(self, result=None, module=None):
-        return base64.b64encode(bytes(module.params['clear_string'], 'UTF-8'))
+        command = f"base64 -w 0 {module.params['clear_string']}"
+        return executeProcess(command, result, module)
 
     def __init__(self):
         module_args = dict(

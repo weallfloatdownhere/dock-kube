@@ -1,0 +1,14 @@
+- name: "Set default values (Kubernetes)."
+  set_fact:
+    # Kubernetes default values
+    default_docker_socket_path: /var/run/docker.sock
+    default_cluster_name: 'cluster-rkeqa'
+
+- name: "Set default values (ArgoCD)."
+  set_fact:
+    default_argocd_helm_charts_url: https://argoproj.github.io/argo-helm
+    default_argocd_cluster_server: "https://kubernetes.default.svc"
+    default_argocd_namespace: argocd
+    default_argocd_admin_password: admin
+    default_argocd_ingress_enabled: false
+    default_argocd_insecure_state: true
