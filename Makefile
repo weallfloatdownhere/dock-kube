@@ -6,7 +6,8 @@ DOCKPASSWD=${DOCKERPASSWORD}
 IMAGE_NAME=$(DOCKUSERNAME)/$(DOCKERIMAGE)
 
 build:
-	DOCKER_BUILDKIT=1 docker build -t $(DOCKERIMAGE)-trial .
+	DOCKER_BUILDKIT=1 docker build -t $(IMAGE_NAME):$(TAGS) .
+	DOCKER_BUILDKIT=1 docker build -t $(IMAGE_NAME):latest .
 
 deploy:
 	docker login --username="$(DOCKUSERNAME)" --password="$(DOCKPASSWD)"
