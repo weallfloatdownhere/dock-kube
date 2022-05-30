@@ -22,7 +22,6 @@
 - name: "Set ArgoCD variables."
   set_fact:
     argocd_cluster_server: '{{ cluster.addons.argocd.cluster.server | default(default_argocd_cluster_server) }}'
-    argocd_cluster_name: '{{ kubernetes_cluster_name }}'
     argocd_admin_password: '{{ cluster.addons.argocd.admin_password | default(default_argocd_admin_password) }}'
     argocd_namespace: '{{ cluster.addons.argocd.namespace | default(default_argocd_namespace) }}'
   notify: export encrypted values
@@ -39,7 +38,7 @@
 - name: "Encrypt the cluster name (base64)."
   encrypt_string:
     encryption: "base64"
-    clear_string: "{{ argocd_cluster_name }}"
+    clear_string: "{{ kubernetes_cluster_name }}"
   register: reg_encrypted_cluster_name
   notify: export encrypted values
   when: (step_tracker == "argocd")

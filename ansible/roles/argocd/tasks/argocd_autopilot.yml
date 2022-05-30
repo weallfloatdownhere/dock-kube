@@ -1,9 +1,11 @@
 - name: "Deploy ArgoCD."
-  shell: "{{ argocd_autopilot_command }}"
+  shell: |
+    argocd-autopilot repo bootstrap --repo {{ cluster.addons.argocd.bootstrap.repo_url }} --installation-mode flat
   environment: 
     KUBECONFIG: "{{ workspace_directory }}/kube_config_cluster.yml"
     GIT_TOKEN: "{{ cluster.addons.argocd.bootstrap.git_token }}"
-    GIT_REPO: "{{ cluster.addons.argocd.bootstrap.git_repo_url }}"
+    GIT_REPO: "{{ cluster.addons.argocd.bootstrap.git_repo }}"
+    GIT_USER: "{{ cluster.addons.argocd.bootstrap.git_user | default(omit) }}"
 
 - name: "Set ArgoCD custom admin password."
   shell: |
@@ -16,3 +18,5 @@
       }'
   environment: 
     KUBECONFIG: "{{ workspace_directory }}/kube_config_cluster.yml"
+    GIT_TOKEN: "{{ cluster.addons.argocd.bootstrap.git_token }}"
+    GIT_REPO: "{{ cluster.addons.argocd.bootstrap.git_repo }}"

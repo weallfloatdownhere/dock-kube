@@ -69,37 +69,33 @@ $ docker pull silentreatmen7/dock-kube:latest
 
 # *<ins>Usage.</ins>*
 
-**Please note that this step is assuming that there is a valid [config.yml](#minimal-configuration-file-example) file in the current directory.**
+**Please note that this step is assuming that there is a valid [config.yml](#*minimal-configuration-file-example*) file in the current directory.**
 
-```bash
-$ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest [COMPONENT(S)] [TASK]
-```
+- **How to use.**
+
+  ```bash
+  $ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest [TASK]
+  ```
+
+- **Install Kubernetes.**
+
+  ```bash
+  $ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest install
+  ```
+
+- **Uninstall everything.**
+
+  ```bash
+  $ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest remove
+  ```
 
 ---
 
 # *<ins>Parameters.</ins>*
 
-| parameter      | description                                     | cmd  | default | type   | required | choices          | dependencies                                                                                               |
-| :------------- | :---------------------------------------------- | :--- | :------ | :----- | :------- | :--------------- | :--------------------------------------------------------------------------------------------------------- |
-| task           | Command execution mode                          |      | install | string | yes      | {install,remove} | [Minimum requirements](#minimum-requirements) and [A config.yml file](#minimal-configuration-file-example) |
-| rke            | Install Kubernetes on target nodes              | -c   |         | string |          |                  | [config.yml](#minimal-configuration-file-example) in the current directory                                 |
-| argocd         | Deploy ArgoCD into the cluster                  | -c   |         | string |          |                  | Kubernetes installed                                                                                       |
-| sealed-secrets | Deploy Sealed secrets operator into the cluster | -c   |         | string |          |                  | Kubernetes installed                                                                                       |
-
-
-## *<ins>Examples.</ins>*
-
-**Install Kubernetes + ArgoCD.**
-
-```bash
-$ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest install
-```
-
-**Uninstall everything.**
-
-```bash
-$ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest remove
-```
+| parameter      | description                                     | cmd  | default | type   | required | choices          | dependencies                                                                                                 |
+| :------------- | :---------------------------------------------- | :--- | :------ | :----- | :------- | :--------------- | :---------------------------------------------------------------------------------------------------------   |
+| task           | Command execution mode                          |      | install | string | yes      | {install,remove} | [Minimum requirements](#minimum-requirements) and [A config.yml file](#*minimal-configuration-file-example*) |
 
 ---
 
@@ -117,25 +113,20 @@ $ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest remove
 | cluster.addons                        | dictionary of addons                 | {}                   | dict   | no                                                                                             |
 | cluster.addons.etcd_snapshots.enabled | enabling Etcd snapshots              | False                | bool   | no                                                                                             |
 | cluster.addons.argocd.enabled         | enabling ArgoCD installation         | False                | bool   | no                                                                                             |
-| cluster.addons.sealed_secrets.enabled | enabling Sealed secrets installation | False                | string | no                                                                                             |
-| ingress.enable_default                | use default ingress controller       | True                 | bool   | no                                                                                             |
-| ingress.custom_ingress_controller     | custom ingress controller name       | nginx                | string | no                                                                                             |
 | docker_socket_path                    | docker daemon path                   | /var/run/docker.sock | string | no                                                                                             |
-| workspace_directory                   | output files destination directory   | $HOME/rke            | string | no                                                                                             |
 
 ---
 
 # Nodes naming convention and nodes roles detection mechanic
 
-***You have probably noticed that you didnt assigned any roles to the nodes. This is because the installer is containing a *dynamic roles detection mechanism*. The detection routine result is based on certains patterns found in the value `cluster.nodes.hostname` of each nodes.***
+***You have probably noticed that you didnt assigned any roles to the nodes. This is because there is a roles detection mechanism inside the installer.***  
 
-***Below are the criterias that has to be met for a node to dynamically get roles attributed to it.*** 
+***The detection routine result is based on certains patterns in found in the value `cluster.nodes.hostname` of each nodes. Below are the criterias that has to be met for a node to dynamically get roles attributed to it.*** 
 
-***<ins>Its also important to note that, if your [config.yml](#minimal-configuration-file-example) file is only `containing three(3) nodes or less`, they automatically get `all possible roles attributed` to them.</ins>***
+***<ins>Its also important to know that, if your [config.yml](#*minimal-configuration-file-example*) file is only `containing three(3) nodes or less`, they automatically get `all possible roles attributed` to them.</ins>***
 
-</br>
 
-**If the `cluster.nodes.hostname` is containing either of these strings/patterns, its a `controlplane + etcd`.**
+**If the `cluster.nodes.hostname` is containing either of these strings/patterns, its a `controlplane + etcd`**
 
 ```bash
 master  # eg: rke-master-1
@@ -145,7 +136,7 @@ manage  # eg: node-manager-1
 admin   # eg: kube-admin-3
 ```
 
-**If the `cluster.nodes.hostname` is containing either of these strings/patterns, its a `worker`.**
+**If the `cluster.nodes.hostname` is containing either of these strings/patterns, its a `worker`**
 
 ```bash
 work    # eg: rke-worker-2
@@ -251,9 +242,6 @@ agent   # agent3
         bootstrap:
           enabled: true
           git_repo: 'https://organizationame@dev.azure.com/organizationame/projectname/_git/argocd-bootstrap-dest'
-          # If empty, the default is the 'main' branch
-          git_repo_branch: ''
-          git_user: ''
           git_token: '0a0a00a0a0a0a0a00a0a0a0a0a00a0a0a0a0a00a0a0a0a0a00a0'
   
   # OPTIONAL - ArgoCD repositories credentials deployment section.

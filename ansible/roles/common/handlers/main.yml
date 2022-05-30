@@ -34,7 +34,6 @@
   debug:
     msg:
       - "{{ argocd_cluster_server | default('ERROR') }}"
-      - "{{ argocd_cluster_name | default('ERROR') }}"
       - "{{ argocd_admin_password | default('ERROR') }}"
       - "{{ argocd_encrypted_admin_password | default('ERROR') }}"
       - "{{ argocd_encrypted_cluster_config | default('ERROR') }}"
