@@ -238,11 +238,6 @@ agent   # agent3
           local: true
           server: 'https://kubernetes.default.svc'
   
-        # ArgoCD deployment in bootstrap mode specifics configurations. (Recommended   but optional.)
-        bootstrap:
-          enabled: true
-          repo_url: 'https://organizationame@dev.azure.com/organizationame/projectname/_git/argocd-bootstrap-dest'
-          repo_password: '0a0a00a0a0a0a0a00a0a0a0a0a00a0a0a0a0a00a0a0a0a0a00a0'
   
   # OPTIONAL - ArgoCD repositories credentials deployment section.
   repositories_creds:
