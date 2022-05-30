@@ -8,7 +8,6 @@ RUN curl -L --silent https://dl.k8s.io/release/v1.24.0/bin/linux/amd64/kubectl -
 RUN curl -L --silent https://github.com/mikefarah/yq/releases/download/v4.25.2/yq_linux_amd64 -o /bin/yq && chmod +x /bin/yq
 RUN curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 RUN helm plugin install https://github.com/databus23/helm-diff
-RUN (curl -L --silent https://github.com/argoproj-labs/argocd-autopilot/releases/download/v0.3.7/argocd-autopilot-linux-amd64.tar.gz | tar zx) && mv ./argocd-autopilot-* ./argocd-autopilot
 
 RUN git config --global user.name "Gitops installer"
 RUN git config --global user.email "gitops@noreply.local"

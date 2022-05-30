@@ -3,11 +3,6 @@
   include_tasks: argocd_server.yml
   when: (cluster.addons.argocd.bootstrap.enabled | default(false) | bool) == false
 
-# step: deploy argocd (ArgoCD-Autopilot)
-- name: "Install ArgoCD base (ArgoCD-Autopilot)."
-  include_tasks: argocd_autopilot.yml
-  when: (cluster.addons.argocd.bootstrap.enabled | default(false) | bool) == true
-
 # step: generate and apply argocd cluster manifest.
 - name: "Deploy ArgoCD cluster."
   include_tasks: argocd_cluster.yml
