@@ -1,32 +1,16 @@
-IMAGENAME=dock-kube
-TAGS="${DOCKERTAG}"
-DOCKUSER="${DOCKERUSERNAME}"
-DOCKPASSWD="${DOCKERPASSWORD}"
+TAGS=1.0.0
+DOCKERIMAGE=dock-kube
 
-define dockclean
-	docker system prune -f || true 
-	docker rm -vf $(docker ps -a -q) || true 
-	docker rmi -f $(docker images -a -q) || true 
-	docker system prune -f || true
-endef
-
-define dockbuild
-	docker login --username=$(DOCKUSER) --password=$(DOCKPASSWD)
-	DOCKER_BUILDKIT=1 docker build -t "$(DOCKUSER)/$(IMAGENAME):$(TAGS)" .
-endef
-
-define dockpush
-	docker push "$(DOCKUSER)/$(IMAGENAME):$(TAGS)"
-endef
-
+DOCKUSERNAME=${DOCKERUSERNAME}
+DOCKPASSWD=${DOCKERPASSWORD}
+IMAGE_NAME=$(DOCKUSERNAME)/$(DOCKERIMAGE)
 
 build:
-	$(call dockbuild)
-
-push:
-	$(call dockpush)
+	DOCKER_BUILDKIT=1 docker build -t $(DOCKERIMAGE)-trial .
 
 deploy:
-	$(call dockclean)
-	$(call dockbuild)
-	$(call dockpush)
+	docker login --username="$(DOCKUSERNAME)" --password="$(DOCKPASSWD)"
+	DOCKER_BUILDKIT=1 docker build -t $(IMAGE_NAME):$(TAGS) .
+	docker push $(IMAGE_NAME):$(TAGS)
+	docker tag $(IMAGE_NAME):$(TAGS) $(IMAGE_NAME):latest
+	docker push $(IMAGE_NAME):latest
