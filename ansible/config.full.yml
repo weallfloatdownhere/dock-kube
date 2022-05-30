@@ -5,17 +5,17 @@ cluster:
   user: 'sudo-user'
   password: 'sudo-user-password'
   nodes:
-    - address: 10.14.31.70
+    - address: 10.10.10.11
       hostname: rkeqa-master-0
-    - address: 10.14.31.71
+    - address: 10.10.10.12
       hostname: rkeqa-master-1
-    - address: 10.14.31.72
+    - address: 10.10.10.13
       hostname: rkeqa-master-2
-    - address: 10.14.31.75
+    - address: 10.10.10.14
       hostname: rkeqa-worker-0
-    - address: 10.14.31.76
+    - address: 10.10.10.15
       hostname: rkeqa-worker-1
-    - address: 10.14.31.77
+    - address: 10.10.10.16
       hostname: rkeqa-worker-2
 
   ingress:
@@ -29,12 +29,22 @@ cluster:
       creation: '12h'
       retention: '24h'
     argocd:
-      enabled: false
-      host:
+      enabled: true
+      ingress: false
+      insecure: true
       namespace: argocd
       admin_password: admin
-      ingress: false
-      insecure: false
+
+      cluster:
+        local: true
+        server: 'https://kubernetes.default.svc'
+
+      bootstrap:
+        enabled: true
+        git_repo: 'https://organizationame@dev.azure.com/organizationame/projectname/_git/argocd-bootstrap-dest'
+        git_repo_branch: ''
+        git_user: ''
+        git_token: '0a0a00a0a0a0a0a00a0a0a0a0a00a0a0a0a0a00a0a0a0a0a00a0'
 
 repositories_creds:
     # Secret name

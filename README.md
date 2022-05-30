@@ -89,16 +89,10 @@ $ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest [COMPON
 
 ## *<ins>Examples.</ins>*
 
-**Install Kubernetes `ONLY` into the cluster.**
+**Install Kubernetes + ArgoCD.**
 
 ```bash
-$ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest -c rke install
-```
-
-**Install Kubernetes and ArgoCD Gitops engine.**
-
-```bash
-$ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest -c rke -c argocd install
+$ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest install
 ```
 
 **Uninstall everything.**
@@ -171,6 +165,8 @@ agent   # agent3
   ```yaml
  ---
   cluster:
+    # Cluster name.
+    name: 'cluster-lab'
     # Organization domain name.
     domain: local.local
     # Target environement.
@@ -198,60 +194,87 @@ agent   # agent3
   ```yaml
   ---
   cluster:
+    # Cluster name.
+    name: 'cluster-lab'
     # Organization domain name.
     domain: local.local
     # Target environement.
     environment: dev
     # Remote nodes sudo user.
-    user: anon
+    user: admin
     # Remote nodes sudo user password.
-    password: toor
-  
+    password: admin
     # List of nodes to include in the cluster.
     nodes:
-      - address: 10.0.0.175
-        hostname: cluster
-        docker_socket_path: '/var/run/docker.sock'
+      - address: 10.10.10.11
+        hostname: rkeqa-master-0
+      - address: 10.10.10.12
+        hostname: rkeqa-master-1
+      - address: 10.10.10.13
+        hostname: rkeqa-master-2
+      - address: 10.10.10.14
+        hostname: rkeqa-worker-0
+      - address: 10.10.10.15
+        hostname: rkeqa-worker-1
+      - address: 10.10.10.16
+        hostname: rkeqa-worker-2
   
+    # Kubernetes cluster ingress basic settings.
     ingress:
-      enabled: True
+      enabled: false
       controller: nginx
       network_mode: hostPort
   
-    # List of addons to deploy / configure.
+    # Cluster's addons specifications.
     addons:
-      # RKE cluster snapshots service.
+      # Cluster etcd snapshots taking.
       etcd_snapshots:
-        enabled: False
-      # ArgoCD Gitops engine deployment.
+        enabled: false
+        creation: '12h'
+        retention: '24h'
+      # ArgoCD deployment configuration.
       argocd:
-        enabled: True
+        enabled: true
+        ingress: false
+        # Specify if ArgoCD should be installed with TLS encryption enabled.
+        insecure: true
         namespace: argocd
+        # Default ArgoCD local admin user password.
         admin_password: admin
-        enable_ingress: True
-        insecure: True
-      # Sealed secrets operator.
-      sealed_secrets:
-        enabled: True
-        namespace: kube-system
-      # Enabling the WebGUI.
-      sealed_secrets_webgui:
-        enabled: False
   
-  applications:
-    install_apps: True
-    repositories_creds:
-      - name: organization_cred
-        repo_url: https://bitbucket.org/organization
-        repo_username: user@organization.com
-        repo_password: user_password
+        # In case you plan to deploy on this cluster from a remote ArgoCD setup, you should config this section. Otherwise, just leave it as it is.
+        cluster:
+          local: true
+          server: 'https://kubernetes.default.svc'
   
-      - name: organization_cred
-        repo_url: https://bitbucket.org/organization
-        repo_ssh_key: |
-          -----BEGIN OPENSSH PRIVATE KEY-----
-          ...
-          -----END OPENSSH PRIVATE KEY-----
+        # ArgoCD deployment in bootstrap mode specifics configurations. (Recommended   but optional.)
+        bootstrap:
+          enabled: true
+          git_repo: 'https://organizationame@dev.azure.com/organizationame/projectname/  _git/argocd-bootstrap-dest'
+          # If empty, the default is the 'main' branch
+          git_repo_branch: ''
+          git_user: ''
+          git_token: '0a0a00a0a0a0a0a00a0a0a0a0a00a0a0a0a0a00a0a0a0a0a00a0'
+  
+  # OPTIONAL - ArgoCD repositories credentials deployment section.
+  repositories_creds:
+      # Secret name
+    - name: repocred-bitbucket-example
+      # Repositories base url.
+      repo_url: https://bitbucket.org/organizationinc
+      # Login username.
+      repo_username: username
+      # AppAuth Token
+      repo_password: password
+  
+      # Secret name
+    - name: repocred-azure-example
+      # Repositories base url.
+      repo_url: https://organization@dev.azure.com/organization/
+      # Login username.
+      repo_username: 0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0aa0a0
+      # AppAuth Token
+      repo_password: 0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0aa0a0
   ```
 
 </details>
@@ -260,16 +283,4 @@ agent   # agent3
 
 # *<ins>Addons / Operators.</ins>*
 
-- [**ArgoCD**](https://github.com/argoproj/argo-cd)
-
-  [***Helm Charts***](https://github.com/argoproj/argo-helm/tree/master/charts/argo-cd)
-
-  ***Configuration***
-
-  *In order to overwrite the default values, create a file name `argocd-values.yaml` in your workspace directory.*
-  *If `argocd-values.yaml` is not present, the [default settings are applied](ansible/roles/argocd/files/default-values.yml)*
-  *You can also find a full configuration examples [HERE](ansible/roles/argocd/files/full-sample-values.yml)*
-
-- [**Sealed-secrets operator**](https://github.com/bitnami-labs/sealed-secrets)
-
----
+## [***ArgoCD***](https://github.com/argoproj/argo-cd)
