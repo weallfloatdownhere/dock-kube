@@ -39,17 +39,15 @@ services:
     creation: {{ cluster.addons.etcd_snapshots.creation | default('12h') }}
     retention: {{ cluster.addons.etcd_snapshots.retention | default('24h') }}
 
-{% if cluster.ingress.enabled %}
 ingress:
-{% if cluster.ingress.controller %}
-  provider: {{ cluster.ingress.controller }}
+{% if cluster.ingress.enabled | default(False) %}
+  provider: {{ cluster.ingress.controller | default('nginx') }}
 {% else %}
   provider: none
 {% endif -%}
 
-{% if cluster.ingress.network_mode %}
+{% if cluster.ingress.network_mode is defined %}
   network_mode: {{ cluster.ingress.network_mode }}
 {% else %}
   network_mode: none
-{% endif -%}
 {% endif -%}
