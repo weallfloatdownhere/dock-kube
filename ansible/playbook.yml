@@ -19,6 +19,6 @@
   - set_fact: { step_tracker: 'argocd' }
   - include_role: { name: argocd }    
     when: (mode_exec == 'install') and
-          (cluster.addons.argocd.enabled | default(True) | bool) == True
+          (cluster.addons.argocd.enabled | default(False) | bool) == True
     
   
