@@ -37,7 +37,6 @@
     - nfs-common
     - python3
     - git
-  when: (needs_update == True)
 
 - name: Add RKE admin user
   become: True
