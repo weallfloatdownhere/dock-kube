@@ -78,7 +78,7 @@ $ docker pull silentreatmen7/dock-kube:latest
   ```
 
 - **Install Kubernetes.**
-
+]
   ```bash
   $ docker run -it -v "$(pwd)/:/root/rke/" silentreatmen7/dock-kube:latest install
   ```

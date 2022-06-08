@@ -3,7 +3,7 @@
     mode_exec: '{{ "remove" if "remove" in triggers else "install" }}'
     verbose_exec: "{{ True if 'verbose' in triggers else False }}"
     workspace_directory: "{{ ansible_env.HOME | default('/root') }}/rke"
-    kubernetes_cluster_name: "{{ cluster.name | default(default_cluster_name) }}"
+    kubernetes_cluster_name: "{{ cluster.name | default(kubernetes_default_cluster_name) }}"
     stamped_file:
       path: /opt
       older_than: 1d
