@@ -14,11 +14,12 @@ entrypoint.py [task] [options]
 ---------------------------------
 task:       {install, remove}
 verbose:    true / false
+skipnodes: true / false
 ---------------------------------
 EXAMPLES
 * entrypoint.py install
 * entrypoint.py remove
-* entrypoint.py install --verbose
+* entrypoint.py install --verbose --skip-nodes
 * entrypoint.py remove --verbose
 """
 
@@ -36,6 +37,7 @@ def generate_command(args=[]):
     command = ['ansible-playbook', '-i', 'localhost', '--extra-vars']
     triggers = [args.task]
     if args.verbose: triggers.append('verbose')
+    if args.skipnodes: triggers.append('skipnodes')
     command.append("'" + '{"triggers": [%s]}' % ','.join(triggers) + "'")
     if [path.exists(CONST_CONFIG_PATH)]: command.append(f'--extra-vars @{CONST_CONFIG_PATH}')
     command.append(CONST_PLAYBOOK_PATH)
@@ -44,6 +46,7 @@ def generate_command(args=[]):
 def get_arguments():
     parser = argparse.ArgumentParser(description=USAGE, formatter_class=RawTextHelpFormatter)
     parser.add_argument('task', type=str, help='Task to execute', default='install', choices=['install', 'remove'])
+    parser.add_argument('--skipnodes', '-s', action='store_true', default=False)
     parser.add_argument('--verbose', '-v', action='store_true', default=False)
     args = parser.parse_args()
     return args

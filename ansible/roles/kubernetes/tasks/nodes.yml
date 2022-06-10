@@ -7,17 +7,14 @@
     sudo apt-get -y update
     sudo apt-get -y upgrade
   register: update_run_status
-  when: (needs_update == True)
 
 - name: Update apt cache
   become: True
   apt: update_cache=yes cache_valid_time=3600
-  when: (needs_update == True)
 
 - name: Upgrade all apt packages
   become: True
   apt: upgrade=dist
-  when: (needs_update == True)
 
 - name: Install dependencies
   become: True
@@ -99,7 +96,6 @@
     - xt_set
     - xt_statistic
     - xt_tcpudp
-  when: (needs_update == True)
 
 - name: Add Docker GPG apt Key
   become: True

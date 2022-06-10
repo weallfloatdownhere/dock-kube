@@ -5,11 +5,15 @@
 # output : needs_update = True|False
 - name: "Stamping file."
   include_tasks: stamping.yml
-  when: (step_tracker == "nodesprereq")
+  when: |
+    step_tracker == "nodesprereq" and
+    skip_nodes_config|default(False)|bool == False
 
 - name: "Nodes system setup."
   include_tasks: nodes.yml
-  when: (step_tracker == "nodesprereq")
+  when: |
+    step_tracker == "nodesprereq" and
+    skip_nodes_config|default(False)|bool == False
 
 - name: "Install / Uninstall Kubernetes."
   include_tasks: rke.yml
