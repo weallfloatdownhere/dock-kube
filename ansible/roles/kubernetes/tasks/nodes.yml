@@ -187,6 +187,11 @@
     name: rke
     groups: [docker, sudo]
     append: yes
+  with_items:
+    - rke
+    - "{{cluster.user|trim}}"
+    - "{{ansible_user_id|trim}}"
+  ignore_errors: True
 
 - name: Modify sysctl entries
   become: True
@@ -203,6 +208,11 @@
 
 - name: "Stamping file at the end of the run."
   include_tasks: stamping.yml
+
+- name: Reload systemd daemon
+  become: True
+  systemd:
+    daemon_reload: yes
 
 - name: "[REBOOT] - Check if /var/run/reboot-required exists"
   stat:
