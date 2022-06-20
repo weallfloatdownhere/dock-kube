@@ -15,8 +15,3 @@
   tasks:
   - set_fact: { step_tracker: 'kubernetes' }
   - include_role: { name: kubernetes }
-
-  - set_fact: { step_tracker: 'argocd' }
-  #- include_role: { name: argocd } 
-  #  when: (mode_exec == 'install') and
-  #        (cluster.addons.argocd.enabled | default(False) | bool) == True

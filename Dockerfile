@@ -1,19 +1,15 @@
 FROM python:3.8-slim as baseline
-RUN apt -y update
+RUN apt-get -y update
 RUN mkdir -p /usr/share/bin /root/.ssh
-RUN apt -y install git curl openssl openssh-client sshpass apache2-utils
+RUN apt -y install bash sudo git curl openssl openssh-client sshpass apache2-utils
 WORKDIR /bin
 RUN curl -L --silent https://github.com/rancher/rke/releases/download/v1.3.11/rke_linux-amd64 -o /bin/rke && chmod +x /bin/rke
 RUN curl -L --silent https://dl.k8s.io/release/v1.24.0/bin/linux/amd64/kubectl -o /bin/kubectl && chmod +x /bin/kubectl
-RUN curl -L --silent https://github.com/mikefarah/yq/releases/download/v4.25.2/yq_linux_amd64 -o /bin/yq && chmod +x /bin/yq
-RUN curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
-RUN helm plugin install https://github.com/databus23/helm-diff
 
 RUN git config --global user.name "Gitops installer"
 RUN git config --global user.email "gitops@noreply.local"
 
 FROM baseline as compiler
-ENV PYTHONUNBUFFERED 1
 RUN apt -y install python3-dev gcc
 RUN python3 -m pip install --upgrade pip
 

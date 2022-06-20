@@ -1,8 +1,6 @@
-- name: "Loading default values."
-  include_tasks: load_default_vars.yml
-
-- name: "Loading custom provided values."
-  include_tasks: load_custom_vars.yml
+- name: "Loading nodes"
+  include_tasks: load_vars.yml
+  when: (step_tracker == "preflight")
 
 - name: "Ensure host requirements are met."
   include_tasks: setup_host.yml

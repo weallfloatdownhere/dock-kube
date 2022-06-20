@@ -2,6 +2,5 @@
 
 ## RKE
 
-## ArgoCD
 
 ## Sealed-secrets

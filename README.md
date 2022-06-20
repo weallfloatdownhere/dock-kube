@@ -1,6 +1,6 @@
 # ***<ins>Devops the Gitops way walkthrough.</ins>***
 
-***Dock-kube - Containers Orchestration + Gitops opinionated installer facilitating the process of RKE & ArgoCD powered on-premise Kubernetes cluster installations.***
+***Dock-kube - Containers Orchestration + Gitops opinionated installer facilitating the process of RKE.***
 
 ---
 
@@ -112,7 +112,6 @@ $ docker pull silentreatmen7/dock-kube:latest
 | cluster.nodes.hostname                | node hostname                        | cluster              | string | [see the nodes naming convention](#nodes-naming-convention-and-nodes-roles-detection-mechanic) |
 | cluster.addons                        | dictionary of addons                 | {}                   | dict   | no                                                                                             |
 | cluster.addons.etcd_snapshots.enabled | enabling Etcd snapshots              | False                | bool   | no                                                                                             |
-| cluster.addons.argocd.enabled         | enabling ArgoCD installation         | False                | bool   | no                                                                                             |
 | docker_socket_path                    | docker daemon path                   | /var/run/docker.sock | string | no                                                                                             |
 
 ---
@@ -183,19 +182,12 @@ agent   # agent3
 <summary><font size=3>config.yml</font></summary>
 
   ```yaml
-  ---
   cluster:
-    # Cluster name.
-    name: 'cluster-lab'
-    # Organization domain name.
-    domain: local.local
-    # Target environement.
-    environment: dev
-    # Remote nodes sudo user.
-    user: admin
-    # Remote nodes sudo user password.
-    password: admin
-    # List of nodes to include in the cluster.
+    name: 'cluster-qa'
+    environment: 'qa'
+    domain: organization.com
+    user: 'sudo-user'
+    password: 'sudo-user-password'
     nodes:
       - address: 10.10.10.11
         hostname: rkeqa-master-0
@@ -209,61 +201,19 @@ agent   # agent3
         hostname: rkeqa-worker-1
       - address: 10.10.10.16
         hostname: rkeqa-worker-2
-  
-    # Kubernetes cluster ingress basic settings.
-    ingress:
-      enabled: false
-      controller: nginx
-      network_mode: hostPort
-  
-    # Cluster's addons specifications.
     addons:
-      # Cluster etcd snapshots taking.
       etcd_snapshots:
         enabled: false
         creation: '12h'
         retention: '24h'
-      # ArgoCD deployment configuration.
-      argocd:
-        enabled: true
-        ingress: false
-        # Specify if ArgoCD should be installed with TLS encryption enabled.
-        insecure: true
-        namespace: argocd
-        # Default ArgoCD local admin user password.
-        admin_password: admin
-  
-        # In case you plan to deploy on this cluster from a remote ArgoCD setup, you should config this section. Otherwise, just leave it as it is.
-        cluster:
-          local: true
-          server: 'https://kubernetes.default.svc'
-  
-  
-  # OPTIONAL - ArgoCD repositories credentials deployment section.
-  repositories_creds:
-      # Secret name
-    - name: repocred-bitbucket-example
-      # Repositories base url.
-      repo_url: https://bitbucket.org/organizationinc
-      # Login username.
-      repo_username: username
-      # AppAuth Token
-      repo_password: password
-  
-      # Secret name
-    - name: repocred-azure-example
-      # Repositories base url.
-      repo_url: https://organization@dev.azure.com/organization/
-      # Login username.
-      repo_username: 0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0aa0a0
-      # AppAuth Token
-      repo_password: 0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0aa0a0
+    ingress:
+      enabled: false
+      controller: nginx
+      network_mode: hostPort
+
+  docker_socket_path: /var/run/docker.sock
   ```
 
 </details>
 
 ---
-
-# *<ins>Addons / Operators.</ins>*
-
-## [***ArgoCD***](https://github.com/argoproj/argo-cd)

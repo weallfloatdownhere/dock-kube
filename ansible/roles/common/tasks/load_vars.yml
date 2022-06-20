@@ -1,0 +1,10 @@
+- name: "Generate hosts list from the provided config.yml file."
+  add_host:
+    hostname: '{{item.address|trim|ansible.netcommon.ipaddr}}'
+    ansible_connection: ssh
+    ansible_user: "{{cluster.user|trim}}"
+    ansible_ssh_pass: "{{cluster.password|trim}}"
+    ansible_become_pass: "{{cluster.password|trim}}"
+    groups: lst_nodes
+  with_items: "{{cluster.nodes|default([])}}"
+  when: (step_tracker == "preflight")
